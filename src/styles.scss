@@ -1,0 +1,476 @@
+@use '@angular/material' as mat;
+
+// ─── Material Theme: Dark (padrão) ───────────────────────────────────────────
+html {
+  @include mat.theme((
+    color: (
+      theme-type: dark,
+      primary: mat.$green-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+}
+
+// ─── Material Theme: Light ────────────────────────────────────────────────────
+html.light-theme {
+  @include mat.theme((
+    color: (
+      theme-type: light,
+      primary: mat.$green-palette,
+    ),
+  ));
+}
+
+// ─── CSS Custom Properties: Tema Escuro (cores do Mobile) ────────────────────
+:root,
+html.dark-theme {
+  --bg:               #0f111a;
+  --surface:          #1a1d26;
+  --sidebar:          #1C1F26;
+  --sidebar-header:   #13161b;
+  --toolbar:          #13161b;
+  --toolbar-border:   rgba(255, 255, 255, 0.05);
+  --accent:           #70c73c;
+  --accent-hover:     #5fb832;
+  --primary:          #5c6bc0;
+  --primary-dark:     #3d5afe;
+  --text:             #e8eaf6;
+  --text-sec:         rgba(255, 255, 255, 0.7);
+  --text-ter:         rgba(255, 255, 255, 0.4);
+  --label:            #7986cb;
+  --active-color:     #81c784;
+  --active-bg:        rgba(76, 175, 80, 0.15);
+  --inactive-color:   #ef9a9a;
+  --inactive-bg:      rgba(244, 67, 54, 0.15);
+  --border:           rgba(255, 255, 255, 0.08);
+  --input-bg:         rgba(255, 255, 255, 0.05);
+  --nav-active:       #2a2e39;
+  --nav-active-border: #3d5afe;
+  --body-label:       #70c73c;
+  --body-active:      #70c73c;
+  --body-active-bg:   rgba(112, 199, 60, 0.12);
+  --body-inactive:    #ef9a9a;
+  --body-inactive-bg: rgba(244, 67, 54, 0.12);
+  --avatar-bg:        #283593;
+  --card-shadow:      0 4px 20px rgba(0, 0, 0, 0.5);
+  --row-hover:        rgba(255, 255, 255, 0.04);
+  --summary-primary-bg:  #1a237e;
+  --summary-accent-bg:   #1565c0;
+  --summary-success-bg:  #1b5e20;
+  --summary-warning-bg:  #bf360c;
+  --quick-people-bg:   #1a237e;
+  --quick-profiles-bg: #0d1b3e;
+  --quick-enterprise-bg: #1b3a1f;
+  --quick-menus-bg:    #3e1a00;
+  --quick-people-icon:   #9fa8da;
+  --quick-profiles-icon: #64b5f6;
+  --quick-enterprise-icon: #81c784;
+  --quick-menus-icon:  #ffb74d;
+}
+
+// ─── CSS Custom Properties: Tema Claro (cores do Mobile lightBody) ────────────
+html.light-theme {
+  --bg:               #dfe0e3;
+  --surface:          #ffffff;
+  --sidebar:          #1C1F26;        /* sidebar permanece escuro como no mobile */
+  --sidebar-header:   #13161b;
+  --toolbar:          #ffffff;
+  --toolbar-border:   rgba(0, 0, 0, 0.08);
+  --accent:           #70c73c;
+  --accent-hover:     #5fb832;
+  --primary:          #5c6bc0;
+  --primary-dark:     #3d5afe;
+  --text:             #1a1d2e;
+  --text-sec:         #5a6478;
+  --text-ter:         #94a3b8;
+  --label:            #4a9925;
+  --active-color:     #4a9925;
+  --active-bg:        rgba(112, 199, 60, 0.12);
+  --inactive-color:   #dc2626;
+  --inactive-bg:      rgba(220, 38, 38, 0.08);
+  --border:           rgba(0, 0, 0, 0.1);
+  --input-bg:         #f4f6fb;
+  --nav-active:       #2a2e39;
+  --nav-active-border: #3d5afe;
+  --body-label:       #4a9925;
+  --body-active:      #4a9925;
+  --body-active-bg:   rgba(112, 199, 60, 0.12);
+  --body-inactive:    #dc2626;
+  --body-inactive-bg: rgba(220, 38, 38, 0.08);
+  --avatar-bg:        #5c6bc0;
+  --card-shadow:      0 2px 12px rgba(0, 0, 0, 0.1);
+  --row-hover:        rgba(0, 0, 0, 0.03);
+  --summary-primary-bg:  rgba(92, 107, 192, 0.15);
+  --summary-accent-bg:   rgba(30, 136, 229, 0.15);
+  --summary-success-bg:  rgba(56, 142, 60, 0.15);
+  --summary-warning-bg:  rgba(230, 81, 0, 0.15);
+  --quick-people-bg:   rgba(92, 107, 192, 0.12);
+  --quick-profiles-bg: rgba(13, 27, 62, 0.08);
+  --quick-enterprise-bg: rgba(27, 58, 31, 0.1);
+  --quick-menus-bg:    rgba(62, 26, 0, 0.08);
+  --quick-people-icon:   #5c6bc0;
+  --quick-profiles-icon: #1976d2;
+  --quick-enterprise-icon: #388e3c;
+  --quick-menus-icon:  #e65100;
+}
+
+// ─── Base ─────────────────────────────────────────────────────────────────────
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+// ─── Paginador ────────────────────────────────────────────────────────────────
+.mat-mdc-paginator {
+  background: transparent !important;
+  color: var(--text) !important;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.mat-mdc-paginator .mat-mdc-icon-button {
+  color: var(--text) !important;
+}
+
+.mat-mdc-paginator .mat-mdc-icon-button svg {
+  fill: var(--text) !important;
+}
+
+.mat-mdc-paginator .mat-mdc-icon-button[disabled] {
+  color: var(--text-ter) !important;
+}
+
+// ─── Layout geral ─────────────────────────────────────────────────────────────
+.page-container {
+  padding: 24px;
+  max-width: 1400px;
+}
+
+.card-container {
+  background: var(--surface);
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  padding: 28px;
+  border: 1px solid var(--border);
+  transition: background 0.25s ease;
+
+  label,
+  .mat-mdc-form-field-label,
+  .mdc-floating-label,
+  mat-label {
+    color: var(--text-sec) !important;
+  }
+
+  .mat-mdc-text-field-wrapper {
+    background: var(--input-bg);
+    border-radius: 6px;
+  }
+
+  h2, h3, h4 { color: var(--text); }
+  p, span { color: var(--text-sec); }
+}
+
+.table-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.search-field {
+  flex: 1;
+  min-width: 200px;
+  max-width: 400px;
+}
+
+mat-table {
+  width: 100%;
+  background: transparent !important;
+}
+
+.mat-column-actions {
+  width: 120px;
+  text-align: center;
+}
+
+// ─── Status chips ─────────────────────────────────────────────────────────────
+.status-chip {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: 12px;
+
+  &.active {
+    background-color: var(--active-bg);
+    color: var(--active-color);
+  }
+
+  &.inactive {
+    background-color: var(--inactive-bg);
+    color: var(--inactive-color);
+  }
+}
+
+// ─── Diálogos ────────────────────────────────────────────────────────────────
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px 0;
+
+  h2 {
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--body-label);
+  }
+}
+
+.dialog-content {
+  padding: 20px 24px;
+  min-width: 480px;
+  background: var(--surface);
+  color: var(--text);
+
+  .form-row {
+    display: flex;
+    gap: 16px;
+
+    mat-form-field { flex: 1; }
+  }
+
+  mat-form-field {
+    width: 100%;
+    margin-bottom: 4px;
+  }
+}
+
+.dialog-actions {
+  padding: 8px 24px 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  background: var(--surface);
+}
+
+// ─── Empty state ──────────────────────────────────────────────────────────────
+.empty-state {
+  text-align: center;
+  padding: 48px;
+  color: var(--text-sec);
+
+  mat-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 16px;
+    color: var(--text-ter);
+  }
+
+  p { font-size: 16px; }
+}
+
+.loading-overlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 48px;
+}
+
+// ─── Page header ──────────────────────────────────────────────────────────────
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+
+  mat-icon {
+    color: var(--body-label);
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+  }
+
+  h1 {
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  span.subtitle {
+    font-size: 14px;
+    color: var(--text-sec);
+    margin-left: 4px;
+  }
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  color: var(--text-sec);
+
+  mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+
+  a {
+    color: var(--body-label);
+    text-decoration: none;
+    &:hover { text-decoration: underline; }
+  }
+}
+
+// ─── Summary cards ────────────────────────────────────────────────────────────
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.summary-card {
+  background: var(--surface);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: var(--card-shadow);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-left: 4px solid;
+  border-top: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  transition: background 0.25s ease, box-shadow 0.25s ease;
+
+  &.primary { border-left-color: var(--primary); }
+  &.accent   { border-left-color: #1e88e5; }
+  &.success  { border-left-color: #388e3c; }
+  &.warning  { border-left-color: #e65100; }
+
+  .icon-wrapper {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    mat-icon { color: #fff; font-size: 24px; }
+
+    &.primary { background: var(--summary-primary-bg); }
+    &.accent   { background: var(--summary-accent-bg); }
+    &.success  { background: var(--summary-success-bg); }
+    &.warning  { background: var(--summary-warning-bg); }
+  }
+
+  .info {
+    h3 {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    p {
+      font-size: 13px;
+      color: var(--body-label);
+    }
+  }
+}
+
+// ─── Snackbar ─────────────────────────────────────────────────────────────────
+.mat-mdc-snack-bar-container {
+  &.success-snackbar { --mdc-snackbar-container-color: #2e7d32; }
+  &.error-snackbar   { --mdc-snackbar-container-color: #b71c1c; }
+}
+
+// ─── Overrides globais de cor de texto ────────────────────────────────────────
+.mat-mdc-cell,
+.mat-mdc-header-cell,
+.mat-mdc-row,
+.mat-mdc-option,
+.mat-mdc-select-value,
+.mat-mdc-input-element,
+.mdc-text-field__input,
+.mat-mdc-form-field,
+.mat-mdc-tab,
+.mat-mdc-list-item {
+  color: var(--text) !important;
+}
+
+// ─── Botão de novo item (primary) ─────────────────────────────────────────────
+.mat-mdc-unelevated-button.mat-primary,
+button[color="primary"].mat-mdc-unelevated-button {
+  background-color: var(--accent) !important;
+  color: #0d0f18 !important;
+}
+
+// ─── Scroll horizontal para tabelas ──────────────────────────────────────────
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+
+  mat-table, .mat-mdc-table {
+    min-width: 480px;
+  }
+}
+
+// ─── Responsivo ───────────────────────────────────────────────────────────────
+@media (max-width: 768px) {
+  .dialog-content {
+    min-width: unset;
+    padding: 16px 16px;
+    .form-row { flex-direction: column; gap: 0; }
+  }
+
+  .dialog-header { padding: 16px 16px 0; }
+  .dialog-actions { padding: 8px 16px 16px; }
+
+  .page-container { padding: 12px; }
+
+  .card-container { padding: 16px; }
+
+  .page-header h1 { font-size: 20px; }
+
+  .table-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+
+    .search-field { max-width: 100%; }
+
+    button { width: 100%; }
+  }
+
+  .save-bar {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+  .profile-selector mat-form-field {
+    min-width: unset !important;
+    width: 100%;
+  }
+
+  // Dialogs não passam da largura da tela
+  .cdk-overlay-pane {
+    max-width: 95vw !important;
+  }
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
