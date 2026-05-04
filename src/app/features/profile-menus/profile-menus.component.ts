@@ -69,7 +69,7 @@ import { Menu } from '../../core/models/menu.model';
                       <div class="menu-item-content">
                         <mat-icon>{{ group.icon || 'circle' }}</mat-icon>
                         <span>{{ group.title }}</span>
-                        <code class="route-mini">{{ group.route }}</code>
+                        <code class="route-mini">{{ group.url }}</code>
                       </div>
                     </mat-checkbox>
                   </div>
@@ -85,7 +85,7 @@ import { Menu } from '../../core/models/menu.model';
                           <div class="menu-item-content">
                             <mat-icon>{{ child.icon || 'circle' }}</mat-icon>
                             <span>{{ child.title }}</span>
-                            <code class="route-mini">{{ child.route }}</code>
+                            <code class="route-mini">{{ child.url }}</code>
                           </div>
                         </mat-checkbox>
                       </div>
@@ -106,7 +106,7 @@ import { Menu } from '../../core/models/menu.model';
                       <div class="menu-item-content">
                         <mat-icon>{{ menu.icon || 'circle' }}</mat-icon>
                         <span>{{ menu.title }}</span>
-                        <code class="route-mini">{{ menu.route }}</code>
+                        <code class="route-mini">{{ menu.url }}</code>
                       </div>
                     </mat-checkbox>
                   </div>
@@ -241,10 +241,10 @@ export class ProfileMenusComponent implements OnInit {
     this.profileService.getAll().subscribe(p => this.profiles.set(p));
     this.menuService.getAll().subscribe(menus => {
       this.allMenus.set(menus);
-      const roots = menus.filter(m => !m.parentId);
+      const roots = menus.filter(m => !m.isSubMenu);
       const groups = roots.map(r => ({
         ...r,
-        children: menus.filter(c => c.parentId === r.id)
+        children: menus.filter(c => c.menuId === r.id)
       }));
       this.menuGroups.set(groups as any);
       const parentIds = groups.flatMap(g => g.children.map(c => c.id));

@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -67,22 +67,20 @@ interface NavItem {
           <nav class="sidebar-nav">
             @for (item of navItems(); track item.id) {
               @if (item.children && item.children.length > 0) {
-                <div class="nav-group">
+                <div class="nav-group" [class.nav-group--open]="item.expanded">
                   <div class="nav-item group-header" (click)="toggle(item)">
                     <i [class]="item.icon" class="nav-icon"></i>
                     <span class="nav-label">{{ item.title }}</span>
-                    <mat-icon class="arrow">{{ item.expanded ? 'expand_less' : 'expand_more' }}</mat-icon>
+                    <mat-icon class="arrow">chevron_right</mat-icon>
                   </div>
-                  @if (item.expanded) {
-                    <div class="submenu">
-                      @for (child of item.children; track child.id) {
-                        <a [routerLink]="child.route" class="nav-item child" routerLinkActive="active-link">
-                          <i class='bx bx-chevron-right child-icon'></i>
-                          <span class="nav-label">{{ child.title }}</span>
-                        </a>
-                      }
-                    </div>
-                  }
+                  <div class="submenu">
+                    @for (child of item.children; track child.id) {
+                      <a [routerLink]="child.route" class="nav-item child" routerLinkActive="active-link">
+                        <i class='bx bx-chevron-right child-icon'></i>
+                        <span class="nav-label">{{ child.title }}</span>
+                      </a>
+                    }
+                  </div>
                 </div>
               } @else {
                 <a [routerLink]="item.route" class="nav-item" routerLinkActive="active-link">
@@ -105,7 +103,7 @@ interface NavItem {
             <mat-icon>{{ themeService.isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
           </button>
 
-          <button mat-button class="btn-sair">
+          <button mat-button class="btn-sair" (click)="logout()">
             <mat-icon>logout</mat-icon>
             <span>Sair</span>
           </button>
@@ -253,13 +251,30 @@ interface NavItem {
     }
 
     .nav-icon { font-size: 18px; width: 20px; text-align: center; flex-shrink: 0; }
-    .child-icon { font-size: 14px; }
+    .child-icon { font-size: 14px; flex-shrink: 0; }
     .nav-label { flex: 1; }
-    .arrow { margin-left: auto; font-size: 18px; color: rgba(255,255,255,0.3); }
+
+    /* Seta do acordeão */
+    .arrow {
+      margin-left: auto;
+      font-size: 18px;
+      color: rgba(255,255,255,0.3);
+      flex-shrink: 0;
+      transition: transform 0.25s ease, color 0.2s;
+    }
 
     .nav-item:hover {
       background: rgba(255,255,255,0.06);
       color: #e8eaf6;
+    }
+
+    /* Cabeçalho do grupo quando aberto */
+    .nav-group--open > .group-header {
+      color: #e8eaf6;
+    }
+    .nav-group--open > .group-header .arrow {
+      transform: rotate(90deg);
+      color: #70c73c;
     }
 
     .active-link {
@@ -269,13 +284,25 @@ interface NavItem {
       padding-left: 17px;
     }
 
+    /* ─── Acordeão via CSS ────────────────────────────────────── */
     .submenu {
-      background: rgba(0,0,0,0.15);
+      max-height: 0;
+      overflow: hidden;
+      background: rgba(0,0,0,0.18);
+      transition: max-height 0.28s ease, opacity 0.22s ease;
+      opacity: 0;
+    }
+
+    .nav-group--open > .submenu {
+      max-height: 600px;
+      opacity: 1;
     }
 
     .nav-item.child {
       padding-left: 44px;
       font-size: 13px;
+      margin: 1px 8px 1px 0;
+      border-radius: 0 8px 8px 0;
     }
 
     /* Footer */
@@ -366,6 +393,7 @@ interface NavItem {
 export class LayoutComponent implements OnInit {
   private menuService = inject(MenuService);
   private breakpointObserver = inject(BreakpointObserver);
+  private router = inject(Router);
   themeService = inject(ThemeService);
 
   navItems = signal<NavItem[]>([]);
@@ -388,31 +416,40 @@ export class LayoutComponent implements OnInit {
     this.clock.set(now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }));
   }
 
+  private toNavItem(m: Menu): NavItem {
+    const raw = m.url || '';
+    const route = raw.startsWith('/') ? raw : '/' + raw;
+    return {
+      id: m.id!,
+      title: m.title || '',
+      icon: m.icon || 'bx bx-circle',
+      route,
+    };
+  }
+
   private loadMenus() {
     this.menuService.getAll().subscribe({
-      next: (menus: any[]) => {
-        const roots = menus.filter(m => !m.parentId);
+      next: (menus: Menu[]) => {
+        const roots = menus.filter(m => !m.isSubMenu);
         const navItems: NavItem[] = roots.map(root => ({
-          id: root.id,
-          title: root.title,
-          icon: root.icon || 'bx bx-circle',
-          route: root.route || '',
+          ...this.toNavItem(root),
           expanded: false,
           children: menus
-            .filter(child => child.parentId === root.id)
-            .map(child => ({
-              id: child.id,
-              title: child.title,
-              icon: child.icon || 'bx bx-chevron-right',
-              route: child.route || ''
-            }))
+            .filter(child => child.menuId === root.id)
+            .map(child => this.toNavItem(child)),
         }));
         this.navItems.set(navItems);
       }
     });
   }
 
+  logout() {
+    this.router.navigate(['/login']);
+  }
+
   toggle(item: NavItem) {
-    item.expanded = !item.expanded;
+    this.navItems.update(items =>
+      items.map(i => i.id === item.id ? { ...i, expanded: !i.expanded } : i)
+    );
   }
 }

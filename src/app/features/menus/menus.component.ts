@@ -49,47 +49,40 @@ import { MenuFormDialogComponent } from './dialogs/menu-form-dialog.component';
         } @else {
           <div class="table-scroll">
           <mat-table [dataSource]="dataSource" matSort>
-            <ng-container matColumnDef="order">
-              <mat-header-cell *matHeaderCellDef mat-sort-header style="max-width: 80px">#</mat-header-cell>
-              <mat-cell *matCellDef="let row" style="max-width: 80px">
-                <span class="order-badge">{{ row.order }}</span>
-              </mat-cell>
-            </ng-container>
-
-            <ng-container matColumnDef="icon">
+<ng-container matColumnDef="icon">
               <mat-header-cell *matHeaderCellDef style="max-width: 80px">Ícone</mat-header-cell>
               <mat-cell *matCellDef="let row" style="max-width: 80px">
-                <div class="icon-preview"><mat-icon>{{ row.icon || 'circle' }}</mat-icon></div>
+                <div class="icon-preview"><i [class]="row.icon || 'bx bx-circle'" style="font-size:18px;color:#9fa8da"></i></div>
               </mat-cell>
             </ng-container>
 
             <ng-container matColumnDef="name">
               <mat-header-cell *matHeaderCellDef mat-sort-header>Nome</mat-header-cell>
-              <mat-cell *matCellDef="let row"><strong>{{ row.name }}</strong></mat-cell>
+              <mat-cell *matCellDef="let row"><strong>{{ row.title }}</strong></mat-cell>
             </ng-container>
 
             <ng-container matColumnDef="route">
-              <mat-header-cell *matHeaderCellDef>Rota</mat-header-cell>
+              <mat-header-cell *matHeaderCellDef>URL</mat-header-cell>
               <mat-cell *matCellDef="let row">
-                <code class="route-badge">{{ row.route }}</code>
+                <code class="route-badge">{{ row.url }}</code>
               </mat-cell>
             </ng-container>
 
             <ng-container matColumnDef="parent">
               <mat-header-cell *matHeaderCellDef>Menu pai</mat-header-cell>
-              <mat-cell *matCellDef="let row">{{ row.parent?.name || '—' }}</mat-cell>
+              <mat-cell *matCellDef="let row">{{ parentTitle(row.menuId) }}</mat-cell>
             </ng-container>
 
-            <ng-container matColumnDef="active">
-              <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+            <ng-container matColumnDef="isSubMenu">
+              <mat-header-cell *matHeaderCellDef>Tipo</mat-header-cell>
               <mat-cell *matCellDef="let row">
-                <span class="status-chip" [class.active]="row.active" [class.inactive]="!row.active">
-                  {{ row.active ? 'Ativo' : 'Inativo' }}
+                <span class="status-chip" [class.active]="!row.isSubMenu" [class.inactive]="row.isSubMenu">
+                  {{ row.isSubMenu ? 'Submenu' : 'Raiz' }}
                 </span>
               </mat-cell>
             </ng-container>
 
-            <ng-container matColumnDef="actions">
+<ng-container matColumnDef="actions">
               <mat-header-cell *matHeaderCellDef>Ações</mat-header-cell>
               <mat-cell *matCellDef="let row">
                 <button mat-icon-button color="primary" matTooltip="Editar" (click)="openDialog(row)">
@@ -151,7 +144,7 @@ export class MenusComponent implements OnInit {
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
 
-  columns = ['order', 'icon', 'name', 'route', 'parent', 'active', 'actions'];
+  columns = ['icon', 'name', 'route', 'parent', 'isSubMenu', 'actions'];
   dataSource = new MatTableDataSource<Menu>([]);
   loading = signal(true);
   allMenus: Menu[] = [];
@@ -165,7 +158,7 @@ export class MenusComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
     this.dataSource.filterPredicate = (data, filter) =>
-      [data.title, data.route].some(f => f?.toLowerCase().includes(filter));
+      [data.title, data.url].some(f => f?.toLowerCase().includes(filter));
   }
 
   load() {
@@ -201,6 +194,11 @@ export class MenusComponent implements OnInit {
         });
       }
     });
+  }
+
+  parentTitle(menuId?: number): string {
+    if (!menuId) return '—';
+    return this.allMenus.find(m => m.id === menuId)?.title || '—';
   }
 
   private notify(msg: string, error = false) {

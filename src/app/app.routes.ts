@@ -13,17 +13,17 @@ export const routes: Routes = [
     path: '',
     component: LayoutComponent,
     children: [
-      
+
       {
         path: 'dashboard',
         loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent)
       },
       {
-        path: 'users',
+        path: 'user',
         loadComponent: () => import('./features/users/users.component').then(m => m.UsersComponent)
       },
       {
-        path: 'profiles',
+        path: 'profile',
         loadComponent: () => import('./features/profiles/profiles.component').then(m => m.ProfilesComponent)
       },
       {
@@ -31,7 +31,7 @@ export const routes: Routes = [
         loadComponent: () => import('./features/enterprise/enterprise.component').then(m => m.EnterpriseComponent)
       },
       {
-        path: 'menus',
+        path: 'menu',
         loadComponent: () => import('./features/menus/menus.component').then(m => m.MenusComponent)
       },
       {
