@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -v \".ts$\")",
+      "Bash(node_modules/.bin/ng build *)",
+      "Bash(npm --version)",
+      "Bash(rm -rf node_modules package-lock.json)",
+      "Bash(npm install *)",
+      "Bash(chmod -R 777 node_modules)",
+      "Bash(node_modules/.bin/ng serve *)",
+      "Bash(echo \"Servidor iniciado em background. PID: $!\")",
+      "Bash(curl -s http://localhost:4200)",
+      "Bash(curl *)",
+      "Bash(jobs)",
+      "Bash(netstat -tlnp)",
+      "Bash(kill 3719)",
+      "Bash(jobs -l)",
+      "Bash(kill 3919)",
+      "Read(//tmp/**)",
+      "Bash(kill 4023 *)",
+      "Bash(grep -n \"color\\\\|background\\\\|#[0-9a-fA-F]\\\\{3,6\\\\}\" /mnt/c/Users/wesley.bezerra/Desktop/wevitech/Portal_ExtraNet/portal-extranet/src/app/features/users/users.component.ts)",
+      "Bash(grep *)",
+      "WebFetch(domain:portal.trevisobank.com.br)",
+      "Bash(npx ng *)",
+      "Bash(echo \"PID: $!\")",
+      "Bash(lsof -ti:4200)",
+      "Bash(xargs kill *)"
+    ]
+  }
+}

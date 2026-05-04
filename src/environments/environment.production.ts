@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://api.wevitech.com.br/api'
+  apiUrl: 'https://api.wevitech.com.br/api'
 };
