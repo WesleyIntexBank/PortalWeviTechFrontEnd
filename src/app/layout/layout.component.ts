@@ -391,20 +391,20 @@ export class LayoutComponent implements OnInit {
   private loadMenus() {
     this.menuService.getAll().subscribe({
       next: (menus: any[]) => {
-        const roots = menus.filter(m => m.menuId === 0);
+        const roots = menus.filter(m => !m.parentId);
         const navItems: NavItem[] = roots.map(root => ({
           id: root.id,
           title: root.title,
           icon: root.icon || 'bx bx-circle',
-          route: root.url || '',
+          route: root.route || '',
           expanded: false,
           children: menus
-            .filter(child => child.menuId === root.id)
+            .filter(child => child.parentId === root.id)
             .map(child => ({
               id: child.id,
               title: child.title,
               icon: child.icon || 'bx bx-chevron-right',
-              route: child.url || ''
+              route: child.route || ''
             }))
         }));
         this.navItems.set(navItems);
