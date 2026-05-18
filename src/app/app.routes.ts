@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { LayoutComponent } from './layout/layout.component';
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -12,6 +13,7 @@ export const routes: Routes = [
   {
     path: '',
     component: LayoutComponent,
+    canActivate: [authGuard],
     children: [
 
       {
@@ -37,6 +39,10 @@ export const routes: Routes = [
       {
         path: 'profile-menus',
         loadComponent: () => import('./features/profile-menus/profile-menus.component').then(m => m.ProfileMenusComponent)
+      },
+      {
+        path: 'ai-chat',
+        loadComponent: () => import('./features/ai-chat/ai-chat.component').then(m => m.AiChatComponent)
       }
     ]
   },

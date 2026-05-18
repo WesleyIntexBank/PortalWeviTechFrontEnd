@@ -9,6 +9,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { ThemeService } from '../../../core/services/theme.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -501,6 +502,7 @@ export class LoginComponent {
   currentYear = new Date().getFullYear();
   themeService = inject(ThemeService);
   private router = inject(Router);
+  private auth = inject(AuthService);
 
   togglePassword() {
     this.showPassword.update(v => !v);
@@ -513,6 +515,8 @@ export class LoginComponent {
 
     setTimeout(() => {
       this.loading.set(false);
+      // Salva o token para manter a sessão ativa entre navegações
+      this.auth.setToken('session_' + Date.now());
       this.router.navigate(['/dashboard']);
     }, 2000);
   }

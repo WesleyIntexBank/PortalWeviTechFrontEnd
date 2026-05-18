@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -9,6 +9,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { CommonModule } from '@angular/common';
 import { MenuService } from '../core/services/menu.service';
 import { ThemeService } from '../core/services/theme.service';
+import { AuthService } from '../core/services/auth.service';
 import { Menu } from '../core/models/menu.model';
 
 interface NavItem {
@@ -393,8 +394,8 @@ interface NavItem {
 export class LayoutComponent implements OnInit {
   private menuService = inject(MenuService);
   private breakpointObserver = inject(BreakpointObserver);
-  private router = inject(Router);
   themeService = inject(ThemeService);
+  private authService = inject(AuthService);
 
   navItems = signal<NavItem[]>([]);
   clock = signal<string>('');
@@ -439,12 +440,13 @@ export class LayoutComponent implements OnInit {
             .map(child => this.toNavItem(child)),
         }));
         this.navItems.set(navItems);
-      }
+      },
+      error: (err) => console.error('[Layout] Erro ao carregar menus:', err)
     });
   }
 
   logout() {
-    this.router.navigate(['/login']);
+    this.authService.logout();
   }
 
   toggle(item: NavItem) {
