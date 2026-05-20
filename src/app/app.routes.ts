@@ -63,6 +63,10 @@ export const routes: Routes = [
       {
         path: 'cnpj-estendida',
         loadComponent: () => import('./features/cnpj-estendida/cnpj-estendida.component').then(m => m.CnpjEstendidaComponent)
+      },
+      {
+        path: 'documento',
+        loadComponent: () => import('./features/documento/documento.component').then(m => m.DocumentoComponent)
       }
     ]
   },
