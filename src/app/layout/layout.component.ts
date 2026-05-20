@@ -93,6 +93,7 @@ interface NavItem {
           </nav>
         </div>
 
+
         <!-- Rodapé: tema + sair -->
         <div class="sidebar-footer">
           <button

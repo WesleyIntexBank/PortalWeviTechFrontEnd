@@ -43,6 +43,26 @@ export const routes: Routes = [
       {
         path: 'ai-chat',
         loadComponent: () => import('./features/ai-chat/ai-chat.component').then(m => m.AiChatComponent)
+      },
+      {
+        path: 'api-tester',
+        loadComponent: () => import('./features/api-tester/api-tester.component').then(m => m.ApiTesterComponent)
+      },
+      {
+        path: 'cpf-consulta',
+        loadComponent: () => import('./features/cpf-consulta/cpf-consulta.component').then(m => m.CpfConsultaComponent)
+      },
+      {
+        path: 'cpf-estendida',
+        loadComponent: () => import('./features/cpf-estendida/cpf-estendida.component').then(m => m.CpfEstendidaComponent)
+      },
+      {
+        path: 'cnpj-consulta',
+        loadComponent: () => import('./features/cnpj-consulta/cnpj-consulta.component').then(m => m.CnpjConsultaComponent)
+      },
+      {
+        path: 'cnpj-estendida',
+        loadComponent: () => import('./features/cnpj-estendida/cnpj-estendida.component').then(m => m.CnpjEstendidaComponent)
       }
     ]
   },
