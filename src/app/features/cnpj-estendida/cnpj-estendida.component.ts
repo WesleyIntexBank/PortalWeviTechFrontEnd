@@ -428,6 +428,50 @@ const RISK_FLAGS: RiskFlag[] = [
             </div>
           }
 
+          <!-- ── Organograma Societário ── -->
+          @if (result()!.quadroSocial?.length) {
+            <div class="info-section border-top">
+              <p class="section-label">
+                <mat-icon class="label-icon">account_tree</mat-icon>
+                Organograma Societário
+              </p>
+
+              <div class="org-chart">
+                <!-- Empresa (raiz) -->
+                <div class="org-root-wrapper">
+                  <div class="org-node org-root-node">
+                    <div class="org-icon pj-icon"><mat-icon>domain</mat-icon></div>
+                    <div class="org-info">
+                      <span class="org-name">{{ result()!.razaoSocial }}</span>
+                      <span class="org-doc">{{ formatCnpj(result()!.documento) }}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Conector vertical root → sócios -->
+                <div class="org-vline-root"></div>
+
+                <!-- Sócios -->
+                <div class="org-socios-row">
+                  @for (socio of result()!.quadroSocial; track socio.documento; let first = $first; let last = $last) {
+                    <div class="org-socio-col" [class.org-first]="first" [class.org-last]="last">
+                      <div class="org-node" [class.org-pf]="socio.pessoa === 'Fisica'" [class.org-pj]="socio.pessoa !== 'Fisica'">
+                        <div class="org-icon" [class.pf-icon]="socio.pessoa === 'Fisica'" [class.pj-icon]="socio.pessoa !== 'Fisica'">
+                          <mat-icon>{{ socio.pessoa === 'Fisica' ? 'person' : 'business' }}</mat-icon>
+                        </div>
+                        <div class="org-info">
+                          <span class="org-name">{{ socio.razaoSocial }}</span>
+                          <span class="org-role">{{ socio.cargo }}</span>
+                          <span class="org-pct">{{ socio.participacaoPercentual }}%</span>
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+
           <!-- ── Rodapé ── -->
           <div class="result-footer">
             <mat-icon class="ok">check_circle</mat-icon>
@@ -801,6 +845,148 @@ const RISK_FLAGS: RiskFlag[] = [
       border-radius: 10px;
       font-size: 12px;
       color: var(--text-sec);
+    }
+
+    /* ── Organograma ── */
+    .org-chart {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: auto;
+      padding: 4px 8px 16px;
+    }
+
+    .org-root-wrapper { position: relative; }
+
+    .org-root-node {
+      background: rgba(61, 90, 254, 0.08) !important;
+      border: 2px solid rgba(61, 90, 254, 0.4) !important;
+    }
+
+    .org-vline-root {
+      width: 2px;
+      height: 24px;
+      background: var(--border);
+      margin: 0 auto;
+    }
+
+    .org-socios-row {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      position: relative;
+    }
+
+    .org-socio-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 8px;
+      position: relative;
+
+      /* linha horizontal no topo */
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--border);
+      }
+
+      /* linha começa no centro do primeiro filho */
+      &.org-first::before { left: 50%; }
+
+      /* linha termina no centro do último filho */
+      &.org-last::before { right: 50%; }
+
+      /* único filho: sem linha horizontal */
+      &.org-first.org-last::before { display: none; }
+
+      /* linha vertical de cada filho */
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 2px;
+        height: 24px;
+        background: var(--border);
+      }
+    }
+
+    .org-node {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      min-width: 160px;
+      max-width: 210px;
+      margin-top: 24px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+
+      &.org-pf { border-color: rgba(112, 199, 60, 0.55); background: rgba(112, 199, 60, 0.05); }
+      &.org-pj { border-color: rgba(61, 90, 254, 0.38);  background: rgba(61, 90, 254, 0.04);  }
+    }
+
+    .org-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+
+      mat-icon { font-size: 18px; width: 18px; height: 18px; }
+
+      &.pf-icon { background: rgba(112, 199, 60, 0.15); color: #70c73c; }
+      &.pj-icon { background: rgba(61, 90, 254, 0.15);  color: var(--primary-dark, #3d5afe); }
+    }
+
+    .org-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .org-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 148px;
+    }
+
+    .org-doc {
+      font-size: 10px;
+      color: var(--text-ter);
+      font-family: 'Consolas', 'Monaco', monospace;
+      letter-spacing: 0.5px;
+    }
+
+    .org-role {
+      font-size: 10px;
+      color: var(--text-sec);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 148px;
+    }
+
+    .org-pct {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--primary-dark, #3d5afe);
+      line-height: 1.2;
     }
 
     /* ── Responsivo ── */
