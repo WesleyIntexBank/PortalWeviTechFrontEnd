@@ -82,11 +82,10 @@ interface CnpjResult {
             >
               @if (loading()) {
                 <mat-spinner diameter="20" class="btn-spinner"></mat-spinner>
-                Consultando...
               } @else {
                 <mat-icon>search</mat-icon>
-                Consultar
               }
+              {{ loading() ? 'Consultando...' : 'Consultar' }}
             </button>
           </div>
         </form>

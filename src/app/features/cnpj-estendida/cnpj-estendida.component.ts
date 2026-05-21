@@ -161,11 +161,10 @@ const RISK_FLAGS: RiskFlag[] = [
             >
               @if (loading()) {
                 <mat-spinner diameter="20" class="btn-spinner"></mat-spinner>
-                Consultando...
               } @else {
                 <mat-icon>search</mat-icon>
-                Consultar
               }
+              {{ loading() ? 'Consultando...' : 'Consultar' }}
             </button>
           </div>
         </form>
@@ -334,7 +333,7 @@ const RISK_FLAGS: RiskFlag[] = [
           }
 
           <!-- ── Quadro Social ── -->
-          @if (result()!.quadroSocial?.length) {
+          @if (result()!.quadroSocial.length) {
             <div class="info-section border-top">
               <p class="section-label">
                 <mat-icon class="label-icon">groups</mat-icon>
@@ -429,7 +428,7 @@ const RISK_FLAGS: RiskFlag[] = [
           }
 
           <!-- ── Organograma Societário ── -->
-          @if (result()!.quadroSocial?.length) {
+          @if (result()!.quadroSocial.length) {
             <div class="info-section border-top">
               <p class="section-label">
                 <mat-icon class="label-icon">account_tree</mat-icon>

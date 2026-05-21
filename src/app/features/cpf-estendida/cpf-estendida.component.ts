@@ -119,11 +119,10 @@ interface CpfEstendidaResult {
             >
               @if (loading()) {
                 <mat-spinner diameter="20" class="btn-spinner"></mat-spinner>
-                Consultando...
               } @else {
                 <mat-icon>search</mat-icon>
-                Consultar
               }
+              {{ loading() ? 'Consultando...' : 'Consultar' }}
             </button>
           </div>
         </form>
@@ -242,7 +241,7 @@ interface CpfEstendidaResult {
           </div>
 
           <!-- Endereços -->
-          @if (result()!.enderecos?.length) {
+          @if (result()!.enderecos.length) {
             <div class="info-section border-top">
               <p class="section-label">
                 <mat-icon class="label-icon">location_on</mat-icon>
@@ -290,9 +289,9 @@ interface CpfEstendidaResult {
           }
 
           <!-- Telefones / Emails em linha -->
-          @if (result()!.telefones?.length || result()!.emails?.length) {
+          @if (result()!.telefones.length || result()!.emails.length) {
             <div class="info-grid two-col border-top">
-              @if (result()!.telefones?.length) {
+              @if (result()!.telefones.length) {
                 <div class="info-section">
                   <p class="section-label">
                     <mat-icon class="label-icon">phone</mat-icon>
@@ -310,7 +309,7 @@ interface CpfEstendidaResult {
                 </div>
               }
 
-              @if (result()!.emails?.length) {
+              @if (result()!.emails.length) {
                 <div class="info-section">
                   <p class="section-label">
                     <mat-icon class="label-icon">email</mat-icon>
@@ -330,7 +329,7 @@ interface CpfEstendidaResult {
           }
 
           <!-- Participações em empresas -->
-          @if (result()!.participacoes?.length) {
+          @if (result()!.participacoes.length) {
             <div class="info-section border-top">
               <p class="section-label">
                 <mat-icon class="label-icon">business</mat-icon>
