@@ -442,6 +442,7 @@ export class LayoutComponent implements OnInit {
             .filter(child => child.menuId === root.id)
             .map(child => this.toNavItem(child)),
         }));
+        this.navItems.set([...navItems]);
       },
       error: (err) => {
         console.error('[Layout] Erro ao carregar menus:', err);

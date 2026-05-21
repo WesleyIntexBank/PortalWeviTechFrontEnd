@@ -25,7 +25,8 @@
       "Bash(echo \"PID: $!\")",
       "Bash(lsof -ti:4200)",
       "Bash(xargs kill *)",
-      "Bash(npx tsc *)"
+      "Bash(npx tsc *)",
+      "Bash(npm ls *)"
     ]
   }
 }
