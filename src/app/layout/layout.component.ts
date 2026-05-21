@@ -430,9 +430,7 @@ export class LayoutComponent implements OnInit {
   }
 
   private loadMenus() {
-    const staticItems: NavItem[] = [
-      { id: -1, title: 'Documento', icon: 'bx bx-file', route: '/documento' }
-    ];
+
 
     this.menuService.getAll().subscribe({
       next: (menus: Menu[]) => {
@@ -444,11 +442,9 @@ export class LayoutComponent implements OnInit {
             .filter(child => child.menuId === root.id)
             .map(child => this.toNavItem(child)),
         }));
-        this.navItems.set([...navItems, ...staticItems]);
       },
       error: (err) => {
         console.error('[Layout] Erro ao carregar menus:', err);
-        this.navItems.set(staticItems);
       }
     });
   }
