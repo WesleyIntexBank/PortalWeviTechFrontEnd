@@ -67,6 +67,10 @@ export const routes: Routes = [
       {
         path: 'documento',
         loadComponent: () => import('./features/documento/documento.component').then(m => m.DocumentoComponent)
+      },
+      {
+        path: 'escavador-processos',
+        loadComponent: () => import('./features/escavador-processos/escavador-processos.component').then(m => m.EscavadorProcessosComponent)
       }
     ]
   },
