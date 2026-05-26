@@ -11,11 +11,11 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AiChatService } from '../../core/services/ai-chat.service';
 
-type Mode = 'text' | 'image' | 'speech';
+type Mode = 'text' | 'image' | 'video' | 'speech';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
-  type: 'text' | 'image' | 'audio';
+  type: 'text' | 'image' | 'audio' | 'video';
   content: string;
   timestamp: Date;
 }
@@ -44,6 +44,9 @@ interface ChatMessage {
           <button class="mode-tab" [class.active]="mode() === 'image'" (click)="setMode('image')">
             <mat-icon>image</mat-icon><span>Imagem</span>
           </button>
+          <button class="mode-tab" [class.active]="mode() === 'video'" (click)="setMode('video')">
+            <mat-icon>videocam</mat-icon><span>Vídeo</span>
+          </button>
           <button class="mode-tab" [class.active]="mode() === 'speech'" (click)="setMode('speech')">
             <mat-icon>mic</mat-icon><span>Fala</span>
           </button>
@@ -71,6 +74,9 @@ interface ChatMessage {
               } @else if (msg.type === 'image') {
                 <img [src]="msg.content" alt="Imagem gerada" class="msg-img" />
                 <p class="img-caption">Imagem gerada pela IA</p>
+              } @else if (msg.type === 'video') {
+                <video [src]="msg.content" controls class="msg-video" preload="metadata"></video>
+                <p class="img-caption">Vídeo gerado pela IA</p>
               } @else if (msg.type === 'audio') {
                 <div class="audio-bubble">
                   <button mat-icon-button (click)="playAudio(msg.content)" matTooltip="Reproduzir">
@@ -116,22 +122,106 @@ interface ChatMessage {
             </button>
           </div>
         } @else if (mode() === 'image') {
-          <div class="text-row">
-            <textarea
-              [(ngModel)]="inputText"
-              placeholder="Descreva a imagem que deseja gerar..."
-              (keydown.enter)="onEnter($event)"
-              class="chat-input"
-              rows="1"
-            ></textarea>
-            <select [(ngModel)]="imageSize" class="size-select">
-              <option value="1024x1024">1024×1024</option>
-              <option value="1792x1024">1792×1024</option>
-              <option value="1024x1792">1024×1792</option>
-            </select>
-            <button mat-icon-button class="send-btn img-btn" (click)="sendImage()" [disabled]="!inputText.trim() || loading()">
-              <mat-icon>image_search</mat-icon>
-            </button>
+          <div class="image-input-area">
+            @if (referenceImages().length > 0) {
+              <div class="ref-images-row">
+                @for (img of referenceImages(); track $index) {
+                  <div class="ref-thumb-wrap">
+                    <img [src]="'data:image/jpeg;base64,' + img" class="ref-thumb" />
+                    <button class="ref-remove" (click)="removeRefImage($index)">
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  </div>
+                }
+              </div>
+            }
+            <div class="text-row">
+              <textarea
+                [(ngModel)]="inputText"
+                placeholder="Descreva a imagem que deseja gerar..."
+                (keydown.enter)="onEnter($event)"
+                class="chat-input"
+                rows="1"
+              ></textarea>
+              <select [(ngModel)]="imageSize" class="size-select">
+                <option value="256x256">256×256</option>
+                <option value="1024x1024">1024×1024</option>
+                <option value="1792x1024">1792×1024</option>
+                <option value="1024x1792">1024×1792</option>
+              </select>
+              <input #fileInput type="file" accept="image/*" multiple hidden (change)="onRefImagesSelected($event)" />
+              <button mat-icon-button class="attach-btn" (click)="fileInput.click()" matTooltip="Adicionar imagens de referência">
+                <mat-icon>attach_file</mat-icon>
+              </button>
+              <button mat-icon-button class="send-btn img-btn" (click)="sendImage()" [disabled]="!inputText.trim() || loading()">
+                <mat-icon>image_search</mat-icon>
+              </button>
+            </div>
+          </div>
+        } @else if (mode() === 'video') {
+          <div class="video-input-area">
+            @if (videoRefUrls().length > 0) {
+              <div class="ref-urls-list">
+                @for (url of videoRefUrls(); track $index) {
+                  <div class="ref-url-chip">
+                    <mat-icon class="chip-icon">link</mat-icon>
+                    <span class="chip-text" [title]="url">{{ url }}</span>
+                    <button class="chip-remove" (click)="removeVideoRefUrl($index)"><mat-icon>close</mat-icon></button>
+                  </div>
+                }
+              </div>
+            }
+            <div class="text-row">
+              <textarea
+                [(ngModel)]="inputText"
+                placeholder="Descreva o vídeo que deseja gerar..."
+                (keydown.enter)="onEnter($event)"
+                class="chat-input"
+                rows="1"
+              ></textarea>
+              <button mat-icon-button class="send-btn video-btn" (click)="sendVideo()" [disabled]="!inputText.trim() || loading()">
+                <mat-icon>videocam</mat-icon>
+              </button>
+            </div>
+            <div class="video-options-row">
+              <div class="video-opt-group">
+                <label>Duração</label>
+                <select [(ngModel)]="videoDuration" class="size-select">
+                  <option [ngValue]="5">5s</option>
+                  <option [ngValue]="10">10s</option>
+                  <option [ngValue]="15">15s</option>
+                  <option [ngValue]="20">20s</option>
+                </select>
+              </div>
+              <div class="video-opt-group">
+                <label>Proporção</label>
+                <select [(ngModel)]="videoAspectRatio" class="size-select">
+                  <option value="16:9">16:9</option>
+                  <option value="4:3">4:3</option>
+                  <option value="1:1">1:1</option>
+                  <option value="9:16">9:16</option>
+                </select>
+              </div>
+              <div class="video-opt-group">
+                <label>Resolução</label>
+                <select [(ngModel)]="videoResolution" class="size-select">
+                  <option value="480p">480p</option>
+                  <option value="720p">720p</option>
+                  <option value="1080p">1080p</option>
+                </select>
+              </div>
+              <div class="video-opt-group url-group">
+                <input
+                  [(ngModel)]="videoRefInput"
+                  placeholder="URL de imagem de referência..."
+                  class="url-input"
+                  (keydown.enter)="addVideoRefUrl(); $event.preventDefault()"
+                />
+                <button mat-icon-button class="attach-btn" (click)="addVideoRefUrl()" matTooltip="Adicionar URL" [disabled]="!videoRefInput.trim()">
+                  <mat-icon>add_link</mat-icon>
+                </button>
+              </div>
+            </div>
           </div>
         } @else {
           <div class="audio-row">
@@ -354,6 +444,84 @@ interface ChatMessage {
       &:disabled { color: var(--text-sec) !important; }
     }
     .img-btn { color: #70c73c !important; }
+    .attach-btn { color: var(--text-sec) !important; flex-shrink: 0; }
+
+    .image-input-area { display: flex; flex-direction: column; gap: 8px; }
+
+    .ref-images-row {
+      display: flex; flex-wrap: wrap; gap: 8px; padding: 4px 2px;
+    }
+
+    .ref-thumb-wrap {
+      position: relative; width: 56px; height: 56px; flex-shrink: 0;
+    }
+
+    .ref-thumb {
+      width: 56px; height: 56px; object-fit: cover; border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .ref-remove {
+      position: absolute; top: -6px; right: -6px;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: #ef5350; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; padding: 0;
+      mat-icon { font-size: 12px; width: 12px; height: 12px; color: #fff; }
+    }
+
+    /* Video */
+    .msg-video {
+      max-width: 100%; border-radius: 10px; display: block;
+      border: 1px solid var(--border); background: #000;
+    }
+
+    .video-input-area { display: flex; flex-direction: column; gap: 8px; }
+
+    .video-options-row {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      padding: 0 2px;
+    }
+
+    .video-opt-group {
+      display: flex; align-items: center; gap: 6px;
+      label { font-size: 11px; color: var(--text-sec); white-space: nowrap; }
+    }
+
+    .url-group { flex: 1; min-width: 180px; }
+
+    .url-input {
+      flex: 1; background: var(--bg); border: 1px solid var(--border);
+      border-radius: 8px; padding: 5px 10px; font-size: 12px;
+      color: var(--text); outline: none; width: 100%;
+      &::placeholder { color: var(--text-sec); }
+      &:focus { border-color: #3d5afe; }
+    }
+
+    .video-btn { color: #9c27b0 !important; }
+
+    .ref-urls-list {
+      display: flex; flex-direction: column; gap: 4px; padding: 2px;
+    }
+
+    .ref-url-chip {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 8px; padding: 4px 8px; max-width: 100%;
+    }
+
+    .chip-icon { font-size: 14px; width: 14px; height: 14px; color: #9c27b0; flex-shrink: 0; }
+
+    .chip-text {
+      flex: 1; font-size: 11px; color: var(--text-sec);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+
+    .chip-remove {
+      background: none; border: none; cursor: pointer; padding: 0;
+      display: flex; align-items: center;
+      mat-icon { font-size: 14px; width: 14px; height: 14px; color: var(--text-sec); }
+      &:hover mat-icon { color: #ef5350; }
+    }
 
     /* Audio row */
     .audio-row {
@@ -418,8 +586,14 @@ export class AiChatComponent implements AfterViewChecked, OnDestroy {
   loading = signal(false);
   recording = signal(false);
   recTime = signal(0);
+  referenceImages = signal<string[]>([]);
+  videoRefUrls = signal<string[]>([]);
   inputText = '';
-  imageSize = '1024x1024';
+  videoRefInput = '';
+  imageSize = '256x256';
+  videoDuration = 10;
+  videoAspectRatio = '4:3';
+  videoResolution = '720p';
 
   private prevMsgLen = 0;
   private mediaRecorder?: MediaRecorder;
@@ -440,20 +614,23 @@ export class AiChatComponent implements AfterViewChecked, OnDestroy {
   setMode(m: Mode) {
     this.mode.set(m);
     this.messages.set([]);
+    this.referenceImages.set([]);
+    this.videoRefUrls.set([]);
   }
 
   emptyIcon(): string {
-    return { text: 'chat_bubble_outline', image: 'image_search', speech: 'record_voice_over' }[this.mode()];
+    return { text: 'chat_bubble_outline', image: 'image_search', video: 'videocam', speech: 'record_voice_over' }[this.mode()];
   }
 
   emptyTitle(): string {
-    return { text: 'Converse com a IA', image: 'Gere imagens com IA', speech: 'Fale com a IA' }[this.mode()];
+    return { text: 'Converse com a IA', image: 'Gere imagens com IA', video: 'Gere vídeos com IA', speech: 'Fale com a IA' }[this.mode()];
   }
 
   emptyHint(): string {
     return {
       text: 'Digite uma mensagem e pressione Enter ou clique em Enviar.',
       image: 'Descreva o que você quer ver e clique em Gerar.',
+      video: 'Descreva a cena, ajuste as opções e clique em Gerar.',
       speech: 'Segure o botão de microfone, fale e solte para enviar.'
     }[this.mode()];
   }
@@ -462,7 +639,9 @@ export class AiChatComponent implements AfterViewChecked, OnDestroy {
     const ke = e as KeyboardEvent;
     if (!ke.shiftKey) {
       ke.preventDefault();
-      this.mode() === 'text' ? this.sendText() : this.sendImage();
+      if (this.mode() === 'text') this.sendText();
+      else if (this.mode() === 'image') this.sendImage();
+      else if (this.mode() === 'video') this.sendVideo();
     }
   }
 
@@ -503,15 +682,94 @@ export class AiChatComponent implements AfterViewChecked, OnDestroy {
     this.inputText = '';
     this.loading.set(true);
 
-    this.svc.generateImage({ message: text, size: this.imageSize }).subscribe({
+    this.svc.generateImage({
+      Message: text,
+      Size: this.imageSize,
+      Quality: 'high',
+      NumberImages: 1,
+      ReferenceImages: this.referenceImages()
+    }).subscribe({
       next: res => {
         this.loading.set(false);
-        this.pushMessage('assistant', 'image', res.message ?? '');
+        const url = res.imageUrl?.[0] ?? '';
+        if (url) {
+          this.pushMessage('assistant', 'image', url);
+        } else {
+          this.pushMessage('assistant', 'text', 'Nenhuma imagem retornada.');
+        }
+        this.referenceImages.set([]);
       },
       error: () => {
         this.loading.set(false);
         this.pushMessage('assistant', 'text', 'Erro ao gerar imagem.');
       }
+    });
+  }
+
+  sendVideo() {
+    const text = this.inputText.trim();
+    if (!text || this.loading()) return;
+
+    this.pushMessage('user', 'text', text);
+    this.inputText = '';
+    this.loading.set(true);
+
+    this.svc.generateVideo({
+      Message: text,
+      Duration: this.videoDuration,
+      AspectRatio: this.videoAspectRatio,
+      Resolution: this.videoResolution,
+      ReferenceImages: this.videoRefUrls()
+    }).subscribe({
+      next: url => {
+        this.loading.set(false);
+        const videoUrl = (url ?? '').trim();
+        if (videoUrl) {
+          this.pushMessage('assistant', 'video', videoUrl);
+        } else {
+          this.pushMessage('assistant', 'text', 'Nenhum vídeo retornado.');
+        }
+        this.videoRefUrls.set([]);
+      },
+      error: () => {
+        this.loading.set(false);
+        this.pushMessage('assistant', 'text', 'Erro ao gerar vídeo.');
+      }
+    });
+  }
+
+  addVideoRefUrl() {
+    const url = this.videoRefInput.trim();
+    if (!url) return;
+    this.videoRefUrls.update(urls => [...urls, url]);
+    this.videoRefInput = '';
+  }
+
+  removeVideoRefUrl(index: number) {
+    this.videoRefUrls.update(urls => urls.filter((_, i) => i !== index));
+  }
+
+  async onRefImagesSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+    const files = Array.from(input.files);
+    const base64List = await Promise.all(files.map(f => this.fileToBase64(f)));
+    this.referenceImages.update(imgs => [...imgs, ...base64List]);
+    input.value = '';
+  }
+
+  removeRefImage(index: number) {
+    this.referenceImages.update(imgs => imgs.filter((_, i) => i !== index));
+  }
+
+  private fileToBase64(file: File): Promise<string> {
+    return new Promise(resolve => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const result = reader.result as string;
+        resolve(result.split(',')[1]);
+      };
+      reader.readAsDataURL(file);
     });
   }
 
