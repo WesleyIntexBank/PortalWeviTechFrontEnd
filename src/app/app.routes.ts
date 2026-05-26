@@ -71,6 +71,10 @@ export const routes: Routes = [
       {
         path: 'escavador-processos',
         loadComponent: () => import('./features/escavador-processos/escavador-processos.component').then(m => m.EscavadorProcessosComponent)
+      },
+      {
+        path: 'metricas',
+        loadComponent: () => import('./features/metricas/metricas.component').then(m => m.MetricasComponent)
       }
     ]
   },
