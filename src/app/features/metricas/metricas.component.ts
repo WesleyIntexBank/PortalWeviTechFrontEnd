@@ -110,7 +110,7 @@ export class MetricasComponent implements OnInit {
   private sanitizer = inject(DomSanitizer);
 
   // Note que mantive o parâmetro &kiosk no final da URL. Ele é excelente pois remove o menu lateral do próprio Grafana.
-  private readonly grafanaUrl = 'https://grafana.wevitech.com.br/public-dashboards/0030e99ba44148f29a8fa64cfb541379';
+  private readonly grafanaUrl = 'https://grafana.wevitech.com.br/public-dashboards/0030e99ba44148f29a8fa64cfb541379?theme=dark&kiosk';
   private readonly LOAD_TIMEOUT_MS = 15000;
 
   dashboardUrl!: SafeResourceUrl;
