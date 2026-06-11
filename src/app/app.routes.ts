@@ -75,6 +75,10 @@ export const routes: Routes = [
       {
         path: 'metricas',
         loadComponent: () => import('./features/metricas/metricas.component').then(m => m.MetricasComponent)
+      },
+      {
+        path: 'lista-restritiva',
+        loadComponent: () => import('./features/lista-restritiva/lista-restritiva.component').then(m => m.ListaRestritivaComponent)
       }
     ]
   },
