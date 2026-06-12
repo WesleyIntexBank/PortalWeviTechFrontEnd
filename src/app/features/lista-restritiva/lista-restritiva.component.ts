@@ -231,6 +231,15 @@ type SearchMode = 'documento' | 'nome';
       mat-button-toggle { font-size: 13px; font-weight: 600; }
     }
 
+    ::ng-deep .mode-toggle-row .mat-button-toggle-checked {
+      background-color: #70c73c !important;
+      color: #000 !important;
+    }
+
+    ::ng-deep .mode-toggle-row .mat-button-toggle-checked .mat-icon {
+      color: #000 !important;
+    }
+
     .search-form { width: 100%; }
 
     .fields-row {

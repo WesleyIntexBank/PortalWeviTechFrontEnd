@@ -88,10 +88,7 @@ export const routes: Routes = [
         path: 'notification-sms',
         loadComponent: () => import('./features/notification-sms/notification-sms.component').then(m => m.NotificationSmsComponent)
       },
-      {
-        path: 'notification-whatsapp',
-        loadComponent: () => import('./features/notification-whatsapp/notification-whatsapp.component').then(m => m.NotificationWhatsAppComponent)
-      }
+      { path: 'notification-whatsapp', redirectTo: 'notification-sms', pathMatch: 'full' }
     ]
   },
   { path: '**', redirectTo: 'login' }

@@ -6,7 +6,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { NotificationService } from '../../core/services/notification.service';
+
+type Canal = 'sms' | 'whatsapp';
 
 @Component({
   selector: 'app-notification-sms',
@@ -19,19 +22,34 @@ import { NotificationService } from '../../core/services/notification.service';
     MatInputModule,
     MatFormFieldModule,
     MatProgressSpinnerModule,
+    MatButtonToggleModule,
   ],
   template: `
     <div class="page-container">
 
       <div class="page-header">
-        <mat-icon>sms</mat-icon>
-        <h1>Envio de SMS</h1>
+        <mat-icon>forum</mat-icon>
+        <h1>Envio de Mensagem</h1>
       </div>
 
       <div class="card-container">
-        <p class="card-desc">
-          Envie mensagens de texto (SMS) via <strong>Zenvia</strong> para qualquer número com DDD.
-        </p>
+
+        <div class="toggle-row">
+          <mat-button-toggle-group [value]="canal()" (change)="setCanal($event.value)" aria-label="Canal de envio" class="canal-toggle">
+            <mat-button-toggle value="sms">
+              <mat-icon>sms</mat-icon>
+              SMS
+            </mat-button-toggle>
+            <mat-button-toggle value="whatsapp">
+              <span class="wa-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                </svg>
+              </span>
+              WhatsApp
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
 
         <form [formGroup]="form" (ngSubmit)="enviar()" class="form-grid">
 
@@ -61,23 +79,32 @@ import { NotificationService } from '../../core/services/notification.service';
               matInput
               formControlName="message"
               rows="5"
-              placeholder="Digite a mensagem SMS..."
-              maxlength="160"
+              [placeholder]="canal() === 'sms' ? 'Digite a mensagem SMS...' : 'Digite a mensagem WhatsApp...'"
+              [maxlength]="canal() === 'sms' ? 160 : 1024"
             ></textarea>
-            <mat-hint align="end">{{ form.value.message?.length ?? 0 }} / 160</mat-hint>
+            <mat-hint align="end">{{ form.value.message?.length ?? 0 }} / {{ canal() === 'sms' ? 160 : 1024 }}</mat-hint>
             @if (form.get('message')?.hasError('required') && form.get('message')?.touched) {
               <mat-error>Mensagem é obrigatória</mat-error>
             }
             @if (form.get('message')?.hasError('maxlength')) {
-              <mat-error>SMS limitado a 160 caracteres</mat-error>
+              <mat-error>{{ canal() === 'sms' ? 'SMS limitado a 160 caracteres' : 'Mensagem muito longa' }}</mat-error>
             }
           </mat-form-field>
 
           <div class="actions-row">
-            <button mat-flat-button color="primary" type="submit" class="btn-enviar" [disabled]="loading()">
-              @if (loading()) { <mat-spinner diameter="20"></mat-spinner> }
-              @else { <mat-icon>send</mat-icon> }
-              {{ loading() ? 'Enviando...' : 'Enviar SMS' }}
+            <button mat-flat-button type="submit" class="btn-enviar" [class.btn-wa]="canal() === 'whatsapp'" [disabled]="loading()">
+              @if (loading()) {
+                <mat-spinner diameter="20"></mat-spinner>
+              } @else if (canal() === 'sms') {
+                <mat-icon>send</mat-icon>
+              } @else {
+                <span class="wa-btn-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                  </svg>
+                </span>
+              }
+              {{ loading() ? 'Enviando...' : (canal() === 'sms' ? 'Enviar SMS' : 'Enviar WhatsApp') }}
             </button>
           </div>
 
@@ -94,7 +121,7 @@ import { NotificationService } from '../../core/services/notification.service';
       @if (success()) {
         <div class="feedback-banner success">
           <mat-icon>check_circle</mat-icon>
-          <span>SMS enviado com sucesso!</span>
+          <span>{{ canal() === 'sms' ? 'SMS enviado' : 'WhatsApp enviado' }} com sucesso!</span>
         </div>
       }
 
@@ -105,7 +132,7 @@ import { NotificationService } from '../../core/services/notification.service';
 
     .page-header {
       display: flex; align-items: center; gap: 12px;
-      mat-icon { font-size: 28px; width: 28px; height: 28px; color: #42a5f5; }
+      mat-icon { font-size: 28px; width: 28px; height: 28px; color: var(--primary, #3d5afe); }
       h1 { margin: 0; font-size: 22px; font-weight: 700; color: var(--text); }
     }
 
@@ -117,10 +144,33 @@ import { NotificationService } from '../../core/services/notification.service';
       box-shadow: var(--card-shadow);
     }
 
-    .card-desc { margin: 0 0 20px; font-size: 14px; color: var(--text-sec); }
+    /* ── Toggle verde ───────────────────────────────────── */
+    .toggle-row { margin-bottom: 24px; }
 
+    ::ng-deep .canal-toggle .mat-button-toggle-checked {
+      background-color: #70c73c !important;
+      color: #000 !important;
+    }
+
+    ::ng-deep .canal-toggle .mat-button-toggle-checked .mat-icon,
+    ::ng-deep .canal-toggle .mat-button-toggle-checked svg {
+      color: #000 !important;
+      fill: #000 !important;
+    }
+
+    ::ng-deep .canal-toggle .mat-button-toggle {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .wa-icon-wrap {
+      display: inline-flex;
+      align-items: center;
+      margin-right: 4px;
+    }
+
+    /* ── Form ───────────────────────────────────────────── */
     .form-grid { display: flex; flex-direction: column; gap: 8px; }
-
     .field-full { width: 100%; }
 
     .actions-row { display: flex; justify-content: flex-end; padding-top: 8px; }
@@ -131,11 +181,21 @@ import { NotificationService } from '../../core/services/notification.service';
       display: flex; align-items: center; gap: 8px;
     }
 
+    .btn-wa {
+      background: #25d366 !important;
+      color: #fff !important;
+    }
+
+    .btn-wa:disabled { opacity: 0.6; }
+
+    .wa-btn-icon { display: inline-flex; align-items: center; }
+
+    /* ── Feedback ───────────────────────────────────────── */
     .feedback-banner {
       display: flex; align-items: center; gap: 10px;
       padding: 14px 20px; border-radius: 10px; font-size: 14px;
       mat-icon { flex-shrink: 0; }
-      &.error  { background: rgba(239,83,80,.10); border: 1px solid rgba(239,83,80,.30); color: #ef5350; }
+      &.error   { background: rgba(239,83,80,.10); border: 1px solid rgba(239,83,80,.30); color: #ef5350; }
       &.success { background: rgba(102,187,106,.10); border: 1px solid rgba(102,187,106,.30); color: #66bb6a; }
     }
 
@@ -148,6 +208,7 @@ import { NotificationService } from '../../core/services/notification.service';
 export class NotificationSmsComponent {
   private service = inject(NotificationService);
 
+  canal   = signal<Canal>('sms');
   loading = signal(false);
   error   = signal<string | null>(null);
   success = signal(false);
@@ -156,6 +217,15 @@ export class NotificationSmsComponent {
     number:  new FormControl('', [Validators.required, Validators.pattern(/^\d{10,15}$/)]),
     message: new FormControl('', [Validators.required, Validators.maxLength(160)]),
   });
+
+  setCanal(c: Canal) {
+    this.canal.set(c);
+    this.error.set(null);
+    this.success.set(false);
+    const maxLen = c === 'sms' ? 160 : 1024;
+    this.form.get('message')!.setValidators([Validators.required, Validators.maxLength(maxLen)]);
+    this.form.get('message')!.updateValueAndValidity();
+  }
 
   maskPhone(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -173,14 +243,19 @@ export class NotificationSmsComponent {
     this.success.set(false);
 
     const v = this.form.value;
-    this.service.sendSms({ number: v.number!, message: v.message! }).subscribe({
+    const payload = { number: v.number!, message: v.message! };
+    const req$ = this.canal() === 'sms'
+      ? this.service.sendSms(payload)
+      : this.service.sendWhatsApp(payload);
+
+    req$.subscribe({
       next: () => {
         this.success.set(true);
         this.form.reset();
         this.loading.set(false);
       },
       error: (err) => {
-        this.error.set(err?.error?.message ?? 'Erro ao enviar SMS. Tente novamente.');
+        this.error.set(err?.error?.message ?? 'Erro ao enviar mensagem. Tente novamente.');
         this.loading.set(false);
       }
     });
