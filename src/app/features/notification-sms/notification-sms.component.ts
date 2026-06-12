@@ -147,6 +147,19 @@ type Canal = 'sms' | 'whatsapp';
     /* ── Toggle verde ───────────────────────────────────── */
     .toggle-row { margin-bottom: 24px; }
 
+    ::ng-deep .canal-toggle .mat-button-toggle {
+      font-size: 13px;
+      font-weight: 600;
+      background-color: transparent !important;
+      color: var(--text, rgba(255,255,255,0.7)) !important;
+    }
+
+    ::ng-deep .canal-toggle .mat-button-toggle .mat-icon,
+    ::ng-deep .canal-toggle .mat-button-toggle svg {
+      color: var(--text, rgba(255,255,255,0.7)) !important;
+      fill: var(--text, rgba(255,255,255,0.7)) !important;
+    }
+
     ::ng-deep .canal-toggle .mat-button-toggle-checked {
       background-color: #70c73c !important;
       color: #000 !important;
@@ -156,11 +169,6 @@ type Canal = 'sms' | 'whatsapp';
     ::ng-deep .canal-toggle .mat-button-toggle-checked svg {
       color: #000 !important;
       fill: #000 !important;
-    }
-
-    ::ng-deep .canal-toggle .mat-button-toggle {
-      font-size: 13px;
-      font-weight: 600;
     }
 
     .wa-icon-wrap {
