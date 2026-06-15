@@ -88,7 +88,23 @@ export const routes: Routes = [
         path: 'notification-sms',
         loadComponent: () => import('./features/notification-sms/notification-sms.component').then(m => m.NotificationSmsComponent)
       },
-      { path: 'notification-whatsapp', redirectTo: 'notification-sms', pathMatch: 'full' }
+      { path: 'notification-whatsapp', redirectTo: 'notification-sms', pathMatch: 'full' },
+      {
+        path: 'ds160',
+        loadComponent: () => import('./features/ds160/ds160.component').then(m => m.DS160Component)
+      },
+      {
+        path: 'access-logs',
+        loadComponent: () => import('./features/access-logs/access-logs.component').then(m => m.AccessLogsComponent)
+      },
+      {
+        path: 'kafka-monitor',
+        loadComponent: () => import('./features/kafka-monitor/kafka-monitor.component').then(m => m.KafkaMonitorComponent)
+      },
+      {
+        path: 'kafka-tester',
+        loadComponent: () => import('./features/kafka-tester/kafka-tester.component').then(m => m.KafkaTesterComponent)
+      }
     ]
   },
   { path: '**', redirectTo: 'login' }

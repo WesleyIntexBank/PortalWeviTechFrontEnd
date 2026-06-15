@@ -148,18 +148,18 @@ interface NavItem {
     /* ─── Sidebar ─────────────────────────────────────────────── */
     .sidenav {
       width: 272px;
-      background: #1C1F26;
+      background: var(--sidebar);
       display: flex;
       flex-direction: column;
       border: none;
-      border-right: 1px solid rgba(255,255,255,0.05);
+      border-right: 1px solid var(--toolbar-border);
     }
 
     /* Logo */
     .sidenav-header {
-      background: #13161b;
+      background: var(--sidebar-header);
       padding: 20px 0px 20px 20px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid var(--border);
     }
 
     .logo-row {
@@ -194,7 +194,7 @@ interface NavItem {
       align-items: center;
       gap: 12px;
       padding: 16px 20px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid var(--border);
     }
 
     .avatar-circle {
@@ -202,7 +202,7 @@ interface NavItem {
       height: 46px;
       border-radius: 50%;
       overflow: hidden;
-      border: 2px solid #3d5afe;
+      border: 2px solid var(--primary);
       flex-shrink: 0;
     }
 
@@ -233,7 +233,7 @@ interface NavItem {
       font-size: 11px;
       font-weight: 600;
       letter-spacing: 1.2px;
-      color: rgba(255,255,255,0.3);
+      color: var(--text-ter);
       padding: 8px 20px;
       margin: 0;
     }
@@ -245,7 +245,7 @@ interface NavItem {
       padding: 11px 12px 11px 20px;
       margin: 1px 8px;
       border-radius: 8px;
-      color: rgba(255,255,255,0.6);
+      color: var(--text-sec);
       text-decoration: none;
       font-size: 14px;
       cursor: pointer;
@@ -260,29 +260,29 @@ interface NavItem {
     .arrow {
       margin-left: auto;
       font-size: 18px;
-      color: rgba(255,255,255,0.3);
+      color: var(--text-ter);
       flex-shrink: 0;
       transition: transform 0.25s ease, color 0.2s;
     }
 
     .nav-item:hover {
-      background: rgba(255,255,255,0.06);
-      color: #e8eaf6;
+      background: var(--row-hover);
+      color: var(--text);
     }
 
     /* Cabeçalho do grupo quando aberto */
     .nav-group--open > .group-header {
-      color: #e8eaf6;
+      color: var(--text);
     }
     .nav-group--open > .group-header .arrow {
       transform: rotate(90deg);
-      color: #70c73c;
+      color: var(--accent);
     }
 
     .active-link {
-      background: #2a2e39;
-      color: #e8eaf6;
-      border-left: 3px solid #3d5afe;
+      background: var(--nav-active);
+      color: var(--text);
+      border-left: 3px solid var(--nav-active-border);
       padding-left: 17px;
     }
 
@@ -290,7 +290,7 @@ interface NavItem {
     .submenu {
       max-height: 0;
       overflow: hidden;
-      background: rgba(0,0,0,0.18);
+      background: rgba(0,0,0,0.12);
       transition: max-height 0.28s ease, opacity 0.22s ease;
       opacity: 0;
     }

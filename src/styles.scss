@@ -22,42 +22,42 @@ html.light-theme {
   ));
 }
 
-// ─── CSS Custom Properties: Tema Escuro (cores do Mobile) ────────────────────
+// ─── CSS Custom Properties: Tema Escuro ──────────────────────────────────────
 :root,
 html.dark-theme {
-  --bg:               #0f111a;
-  --surface:          #1a1d26;
-  --sidebar:          #1C1F26;
-  --sidebar-header:   #13161b;
-  --toolbar:          #13161b;
-  --toolbar-border:   rgba(255, 255, 255, 0.05);
+  --bg:               #1e2130;
+  --surface:          #262b3d;
+  --sidebar:          #222639;
+  --sidebar-header:   #1a1e2e;
+  --toolbar:          #1a1e2e;
+  --toolbar-border:   rgba(255, 255, 255, 0.07);
   --accent:           #70c73c;
   --accent-hover:     #5fb832;
-  --primary:          #5c6bc0;
-  --primary-dark:     #3d5afe;
+  --primary:          #7986cb;
+  --primary-dark:     #5c6bc0;
   --text:             #e8eaf6;
-  --text-sec:         rgba(255, 255, 255, 0.7);
-  --text-ter:         rgba(255, 255, 255, 0.4);
-  --label:            #7986cb;
+  --text-sec:         rgba(220, 224, 255, 0.75);
+  --text-ter:         rgba(200, 210, 255, 0.4);
+  --label:            #9fa8da;
   --active-color:     #81c784;
   --active-bg:        rgba(76, 175, 80, 0.15);
   --inactive-color:   #ef9a9a;
   --inactive-bg:      rgba(244, 67, 54, 0.15);
-  --border:           rgba(255, 255, 255, 0.08);
-  --input-bg:         rgba(255, 255, 255, 0.05);
-  --nav-active:       #2a2e39;
-  --nav-active-border: #3d5afe;
+  --border:           rgba(255, 255, 255, 0.10);
+  --input-bg:         rgba(255, 255, 255, 0.06);
+  --nav-active:       #313654;
+  --nav-active-border: #7986cb;
   --body-label:       #70c73c;
   --body-active:      #70c73c;
   --body-active-bg:   rgba(112, 199, 60, 0.12);
   --body-inactive:    #ef9a9a;
   --body-inactive-bg: rgba(244, 67, 54, 0.12);
-  --avatar-bg:        #283593;
-  --card-shadow:      0 4px 20px rgba(0, 0, 0, 0.5);
-  --row-hover:        rgba(255, 255, 255, 0.04);
-  --summary-primary-bg:  #1a237e;
+  --avatar-bg:        #3949ab;
+  --card-shadow:      0 4px 24px rgba(0, 0, 0, 0.35);
+  --row-hover:        rgba(255, 255, 255, 0.05);
+  --summary-primary-bg:  #283593;
   --summary-accent-bg:   #1565c0;
-  --summary-success-bg:  #1b5e20;
+  --summary-success-bg:  #2e7d32;
   --summary-warning-bg:  #bf360c;
   --quick-people-bg:   #1a237e;
   --quick-profiles-bg: #0d1b3e;
@@ -410,6 +410,79 @@ mat-table {
 .mat-mdc-tab,
 .mat-mdc-list-item {
   color: var(--text) !important;
+}
+
+// ─── MDC token overrides — Form fields (outlined) ────────────────────────────
+// Angular Material 3 injects these tokens inline; must override at root level.
+:root, html.dark-theme {
+  // Outlined text field
+  --mdc-outlined-text-field-input-text-color:        var(--text);
+  --mdc-outlined-text-field-label-text-color:        var(--text-sec);
+  --mdc-outlined-text-field-outline-color:           var(--border);
+  --mdc-outlined-text-field-hover-outline-color:     var(--primary);
+  --mdc-outlined-text-field-focus-outline-color:     var(--accent);
+  --mdc-outlined-text-field-caret-color:             var(--accent);
+  --mdc-outlined-text-field-container-color:         transparent;
+  --mdc-outlined-text-field-disabled-input-text-color: var(--text-ter);
+  --mdc-outlined-text-field-disabled-outline-color:  var(--border);
+
+  // Filled text field (fallback)
+  --mdc-filled-text-field-input-text-color:          var(--text);
+  --mdc-filled-text-field-label-text-color:          var(--text-sec);
+  --mdc-filled-text-field-container-color:           var(--input-bg);
+  --mdc-filled-text-field-caret-color:               var(--accent);
+
+  // Form field wrapper background
+  --mat-form-field-container-text-color:             var(--text);
+
+  // Select
+  --mat-select-enabled-trigger-text-color:           var(--text);
+  --mat-select-placeholder-text-color:               var(--text-ter);
+  --mat-select-enabled-arrow-color:                  var(--text-sec);
+  --mat-select-panel-background-color:               var(--surface);
+  --mat-option-label-text-color:                     var(--text);
+  --mat-option-hover-state-layer-color:              var(--row-hover);
+  --mat-option-selected-state-layer-color:           rgba(121, 134, 203, 0.15);
+
+  // Stepper
+  --mat-stepper-header-label-text-color:             var(--text-sec);
+  --mat-stepper-header-selected-state-label-text-color: var(--text);
+  --mat-stepper-header-done-state-label-text-color:  var(--text-sec);
+  --mat-stepper-header-edit-state-label-text-color:  var(--text-sec);
+  --mat-stepper-header-icon-background-color:        var(--surface);
+  --mat-stepper-header-icon-foreground-color:        var(--text-sec);
+  --mat-stepper-header-selected-state-icon-background-color: var(--primary);
+  --mat-stepper-header-selected-state-icon-foreground-color: #fff;
+  --mat-stepper-header-done-state-icon-background-color: var(--accent);
+  --mat-stepper-header-done-state-icon-foreground-color: #000;
+  --mat-stepper-line-color:                          var(--border);
+  --mat-stepper-container-color:                     transparent;
+
+  // Slide toggle
+  --mdc-switch-track-color:                          var(--border);
+  --mat-slide-toggle-label-text-color:               var(--text);
+}
+
+// Light theme override for form fields
+html.light-theme {
+  --mdc-outlined-text-field-input-text-color:        var(--text);
+  --mdc-outlined-text-field-label-text-color:        var(--text-sec);
+  --mdc-outlined-text-field-outline-color:           var(--border);
+  --mdc-outlined-text-field-hover-outline-color:     var(--primary);
+  --mdc-outlined-text-field-focus-outline-color:     var(--accent);
+  --mdc-outlined-text-field-container-color:         transparent;
+  --mdc-filled-text-field-input-text-color:          var(--text);
+  --mdc-filled-text-field-label-text-color:          var(--text-sec);
+  --mdc-filled-text-field-container-color:           var(--input-bg);
+  --mat-form-field-container-text-color:             var(--text);
+  --mat-select-enabled-trigger-text-color:           var(--text);
+  --mat-select-panel-background-color:               var(--surface);
+  --mat-option-label-text-color:                     var(--text);
+  --mat-stepper-header-label-text-color:             var(--text-sec);
+  --mat-stepper-header-selected-state-label-text-color: var(--text);
+  --mat-stepper-header-selected-state-icon-background-color: var(--primary);
+  --mat-stepper-container-color:                     transparent;
+  --mat-slide-toggle-label-text-color:               var(--text);
 }
 
 // ─── Botão de novo item (primary) ─────────────────────────────────────────────
