@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed, OnInit } from '@angular/core';
+import { Component, inject, signal, computed, OnInit, AfterViewInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -9,11 +9,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
+import * as L from 'leaflet';
 import {
   AppInsightsService,
   RequestLogRow,
   SummaryResponse,
   TopRouteRow,
+  LocationRow,
 } from '../../core/services/app-insights.service';
 
 @Component({
@@ -94,6 +96,21 @@ import {
           </div>
         </div>
       }
+
+      <!-- ── Mapa de acessos ─────────────────────────────────────── -->
+      <div class="map-card">
+        <h3 class="card-title">
+          <mat-icon>public</mat-icon>
+          Mapa de Acessos
+          @if (loadingLocations()) {
+            <mat-spinner diameter="16" class="title-spinner"></mat-spinner>
+          }
+        </h3>
+        @if (!loadingLocations() && !locations().length) {
+          <div class="empty-small">Sem dados de localização para o período selecionado.</div>
+        }
+        <div class="map-container" [class.map-hidden]="!locations().length" #mapEl></div>
+      </div>
 
       <!-- ── Layout: tabela + top rotas ──────────────────────────── -->
       <div class="main-layout">
@@ -308,6 +325,19 @@ import {
     .s-val  { font-size: 22px; font-weight: 700; color: var(--text); }
     .s-label { font-size: 12px; color: var(--text-sec); }
 
+    /* ── Mapa ── */
+    .map-card {
+      background: var(--surface); border-radius: 12px;
+      border: 1px solid var(--border); padding: 20px;
+      box-shadow: var(--card-shadow);
+    }
+    .title-spinner { margin-left: 6px; }
+    .map-container {
+      height: 380px; border-radius: 8px; overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .map-hidden { display: none; }
+
     /* ── Layout ── */
     .main-layout {
       display: grid;
@@ -468,9 +498,13 @@ import {
     ::ng-deep .mat-mdc-option { color: var(--text) !important; }
   `]
 })
-export class AccessLogsComponent implements OnInit {
+export class AccessLogsComponent implements OnInit, AfterViewInit, OnDestroy {
   private svc = inject(AppInsightsService);
   private fb = inject(FormBuilder);
+
+  @ViewChild('mapEl') mapEl!: ElementRef<HTMLDivElement>;
+  private map?: L.Map;
+  private markersLayer?: L.LayerGroup;
 
   filterForm: FormGroup = this.fb.group({
     ip: [''],
@@ -485,10 +519,12 @@ export class AccessLogsComponent implements OnInit {
   loadingSummary = signal(false);
   loadingLogs = signal(false);
   loadingTopRoutes = signal(false);
+  loadingLocations = signal(false);
 
   summary = signal<SummaryResponse | null>(null);
   rows = signal<RequestLogRow[]>([]);
   topRoutes = signal<TopRouteRow[]>([]);
+  locations = signal<LocationRow[]>([]);
   errorMsg = signal('');
   lastUpdated = signal('');
 
@@ -508,16 +544,65 @@ export class AccessLogsComponent implements OnInit {
 
   ngOnInit() { this.refresh(); }
 
+  ngAfterViewInit() {
+    this.map = L.map(this.mapEl.nativeElement, { scrollWheelZoom: false }).setView([-14.235, -51.9253], 4);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors',
+      maxZoom: 18,
+    }).addTo(this.map);
+    this.markersLayer = L.layerGroup().addTo(this.map);
+    this.renderMarkers();
+  }
+
+  ngOnDestroy() {
+    this.map?.remove();
+  }
+
   refresh() {
     this.loadSummary();
     this.loadLogs();
     this.loadTopRoutes();
+    this.loadLocations();
   }
 
   onHoursChange(h: number) {
     this.selectedHours.set(h);
     this.loadSummary();
     this.loadTopRoutes();
+    this.loadLocations();
+  }
+
+  private loadLocations() {
+    this.loadingLocations.set(true);
+    this.svc.getLocations(this.selectedHours()).subscribe({
+      next: locs => {
+        this.locations.set(locs);
+        this.loadingLocations.set(false);
+        this.renderMarkers();
+      },
+      error: () => { this.loadingLocations.set(false); }
+    });
+  }
+
+  private renderMarkers() {
+    if (!this.markersLayer) return;
+    this.markersLayer.clearLayers();
+    for (const loc of this.locations()) {
+      const radius = Math.min(8 + Math.log(loc.count + 1) * 5, 35);
+      L.circleMarker([loc.lat, loc.lon], {
+        radius,
+        color: '#1976d2',
+        fillColor: '#1976d2',
+        fillOpacity: 0.45,
+        weight: 1.5,
+      })
+        .bindPopup(
+          `<strong>${loc.city}${loc.country ? ', ' + loc.country : ''}</strong><br>` +
+          `${loc.count.toLocaleString('pt-BR')} requisições<br>` +
+          `${loc.avgMs.toFixed(0)} ms (média)`
+        )
+        .addTo(this.markersLayer);
+    }
   }
 
   private loadSummary() {

@@ -34,6 +34,15 @@ export interface TopRouteRow {
   errors: number;
 }
 
+export interface LocationRow {
+  city: string;
+  country: string;
+  lat: number;
+  lon: number;
+  count: number;
+  avgMs: number;
+}
+
 export interface RequestFilter {
   from?: string;
   to?: string;
@@ -68,6 +77,12 @@ export class AppInsightsService {
   getTopRoutes(hours = 24, top = 10): Observable<TopRouteRow[]> {
     return this.http.get<TopRouteRow[]>(`${this.base}/top-routes`, {
       params: new HttpParams().set('hours', hours.toString()).set('top', top.toString())
+    });
+  }
+
+  getLocations(hours = 24): Observable<LocationRow[]> {
+    return this.http.get<LocationRow[]>(`${this.base}/locations`, {
+      params: new HttpParams().set('hours', hours.toString())
     });
   }
 }
