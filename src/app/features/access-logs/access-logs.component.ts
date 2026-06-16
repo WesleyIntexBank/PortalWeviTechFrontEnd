@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed, OnInit, AfterViewInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, inject, signal, computed, effect, OnInit, AfterViewInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -10,6 +10,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
 import * as L from 'leaflet';
+import { ThemeService } from '../../core/services/theme.service';
 import {
   AppInsightsService,
   RequestLogRow,
@@ -501,10 +502,22 @@ import {
 export class AccessLogsComponent implements OnInit, AfterViewInit, OnDestroy {
   private svc = inject(AppInsightsService);
   private fb = inject(FormBuilder);
+  private themeService = inject(ThemeService);
 
   @ViewChild('mapEl') mapEl!: ElementRef<HTMLDivElement>;
   private map?: L.Map;
   private markersLayer?: L.LayerGroup;
+  private tileLayer?: L.TileLayer;
+
+  constructor() {
+    effect(() => {
+      this.themeService.isDark();
+      if (this.map) {
+        this.setTileLayer();
+        this.renderMarkers();
+      }
+    });
+  }
 
   filterForm: FormGroup = this.fb.group({
     ip: [''],
@@ -546,16 +559,28 @@ export class AccessLogsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     this.map = L.map(this.mapEl.nativeElement, { scrollWheelZoom: false }).setView([-14.235, -51.9253], 4);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors',
-      maxZoom: 18,
-    }).addTo(this.map);
+    this.setTileLayer();
     this.markersLayer = L.layerGroup().addTo(this.map);
     this.renderMarkers();
   }
 
   ngOnDestroy() {
     this.map?.remove();
+  }
+
+  private setTileLayer() {
+    if (!this.map) return;
+    if (this.tileLayer) this.map.removeLayer(this.tileLayer);
+
+    const dark = this.themeService.isDark();
+    const url = dark
+      ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+      : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    const attribution = dark
+      ? '&copy; OpenStreetMap contributors &copy; CARTO'
+      : '&copy; OpenStreetMap contributors';
+
+    this.tileLayer = L.tileLayer(url, { attribution, maxZoom: 19 }).addTo(this.map);
   }
 
   refresh() {
@@ -587,13 +612,15 @@ export class AccessLogsComponent implements OnInit, AfterViewInit, OnDestroy {
   private renderMarkers() {
     if (!this.markersLayer) return;
     this.markersLayer.clearLayers();
+    const dark = this.themeService.isDark();
+    const markerColor = dark ? '#29b6f6' : '#1976d2';
     for (const loc of this.locations()) {
       const radius = Math.min(8 + Math.log(loc.count + 1) * 5, 35);
       L.circleMarker([loc.lat, loc.lon], {
         radius,
-        color: '#1976d2',
-        fillColor: '#1976d2',
-        fillOpacity: 0.45,
+        color: markerColor,
+        fillColor: markerColor,
+        fillOpacity: dark ? 0.55 : 0.45,
         weight: 1.5,
       })
         .bindPopup(
