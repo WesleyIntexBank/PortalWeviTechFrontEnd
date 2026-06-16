@@ -104,6 +104,10 @@ export const routes: Routes = [
       {
         path: 'kafka-tester',
         loadComponent: () => import('./features/kafka-tester/kafka-tester.component').then(m => m.KafkaTesterComponent)
+      },
+      {
+        path: 'swift-consulta',
+        loadComponent: () => import('./features/swift-consulta/swift-consulta.component').then(m => m.SwiftConsultaComponent)
       }
     ]
   },
