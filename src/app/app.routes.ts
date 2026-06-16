@@ -108,6 +108,10 @@ export const routes: Routes = [
       {
         path: 'swift-consulta',
         loadComponent: () => import('./features/swift-consulta/swift-consulta.component').then(m => m.SwiftConsultaComponent)
+      },
+      {
+        path: 'iban-consulta',
+        loadComponent: () => import('./features/iban-consulta/iban-consulta.component').then(m => m.IbanConsultaComponent)
       }
     ]
   },
