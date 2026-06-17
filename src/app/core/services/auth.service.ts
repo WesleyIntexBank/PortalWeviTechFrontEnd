@@ -72,10 +72,13 @@ export class AuthService {
   login(credentials: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(this.baseUrl, credentials).pipe(
       tap(response => {
-        if (response?.token) {
+        if (!response) return;
+        // Salva usuário parcial sempre (inclusive quando isA2F=1 sem token)
+        // para que validateCode possa recuperar os dados depois
+        localStorage.setItem(USER_KEY, JSON.stringify(response));
+        if (response.token) {
           this.setToken(response.token);
           this.currentUser.set(response);
-          localStorage.setItem(USER_KEY, JSON.stringify(response));
         }
       })
     );
@@ -90,6 +93,16 @@ export class AuthService {
       tap(response => {
         if (response?.result && response.token) {
           this.setToken(response.token);
+          // recupera usuário parcial salvo durante o login para manter currentUser populado
+          const stored = localStorage.getItem(USER_KEY);
+          if (stored) {
+            try {
+              const user: AuthResponse = JSON.parse(stored);
+              user.token = response.token;
+              this.currentUser.set(user);
+              localStorage.setItem(USER_KEY, JSON.stringify(user));
+            } catch { /* ignore */ }
+          }
         }
       })
     );
