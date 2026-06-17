@@ -112,6 +112,10 @@ export const routes: Routes = [
       {
         path: 'iban-consulta',
         loadComponent: () => import('./features/iban-consulta/iban-consulta.component').then(m => m.IbanConsultaComponent)
+      },
+      {
+        path: 'routing-number-consulta',
+        loadComponent: () => import('./features/routing-number-consulta/routing-number-consulta.component').then(m => m.RoutingNumberConsultaComponent)
       }
     ]
   },

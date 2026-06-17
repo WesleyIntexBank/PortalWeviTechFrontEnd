@@ -577,7 +577,7 @@ export class AccessLogsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private tileStyle(dark: boolean): string {
     return dark
-      ? 'https://tiles.openfreemap.org/styles/dark'
+      ? 'https://tiles.openfreemap.org/styles/liberty'
       : 'https://tiles.openfreemap.org/styles/positron';
   }
 
