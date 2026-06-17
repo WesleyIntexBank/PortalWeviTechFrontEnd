@@ -9,7 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
-import * as L from 'leaflet';
+import maplibregl from 'maplibre-gl';
 import { ThemeService } from '../../core/services/theme.service';
 import {
   AppInsightsService,
@@ -505,16 +505,15 @@ export class AccessLogsComponent implements OnInit, AfterViewInit, OnDestroy {
   private themeService = inject(ThemeService);
 
   @ViewChild('mapEl') mapEl!: ElementRef<HTMLDivElement>;
-  private map?: L.Map;
-  private markersLayer?: L.LayerGroup;
-  private tileLayer?: L.TileLayer;
+  private map?: maplibregl.Map;
+  private markers: maplibregl.Marker[] = [];
 
   constructor() {
     effect(() => {
-      this.themeService.isDark();
+      const dark = this.themeService.isDark();
       if (this.map) {
-        this.setTileLayer();
-        this.renderMarkers();
+        this.map.setStyle(this.tileStyle(dark));
+        this.map.once('styledata', () => this.renderMarkers());
       }
     });
   }
@@ -558,29 +557,28 @@ export class AccessLogsComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() { this.refresh(); }
 
   ngAfterViewInit() {
-    this.map = L.map(this.mapEl.nativeElement, { scrollWheelZoom: false }).setView([-14.235, -51.9253], 4);
-    this.setTileLayer();
-    this.markersLayer = L.layerGroup().addTo(this.map);
-    this.renderMarkers();
+    const dark = this.themeService.isDark();
+    this.map = new maplibregl.Map({
+      container: this.mapEl.nativeElement,
+      style: this.tileStyle(dark),
+      center: [-51.9253, -14.235],
+      zoom: 2,
+      scrollZoom: false,
+      attributionControl: { compact: true },
+    });
+    this.map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
+    this.map.on('load', () => this.renderMarkers());
   }
 
   ngOnDestroy() {
+    this.markers.forEach(m => m.remove());
     this.map?.remove();
   }
 
-  private setTileLayer() {
-    if (!this.map) return;
-    if (this.tileLayer) this.map.removeLayer(this.tileLayer);
-
-    const dark = this.themeService.isDark();
-    const url = dark
-      ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-      : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-    const attribution = dark
-      ? '&copy; OpenStreetMap contributors &copy; CARTO'
-      : '&copy; OpenStreetMap contributors';
-
-    this.tileLayer = L.tileLayer(url, { attribution, maxZoom: 19 }).addTo(this.map);
+  private tileStyle(dark: boolean): string {
+    return dark
+      ? 'https://tiles.openfreemap.org/styles/dark'
+      : 'https://tiles.openfreemap.org/styles/positron';
   }
 
   refresh() {
@@ -603,32 +601,48 @@ export class AccessLogsComponent implements OnInit, AfterViewInit, OnDestroy {
       next: locs => {
         this.locations.set(locs);
         this.loadingLocations.set(false);
-        this.renderMarkers();
+        if (this.map?.loaded()) {
+          this.renderMarkers();
+        }
       },
       error: () => { this.loadingLocations.set(false); }
     });
   }
 
   private renderMarkers() {
-    if (!this.markersLayer) return;
-    this.markersLayer.clearLayers();
+    if (!this.map) return;
+    this.markers.forEach(m => m.remove());
+    this.markers = [];
+
     const dark = this.themeService.isDark();
-    const markerColor = dark ? '#29b6f6' : '#1976d2';
+    const color = dark ? '#29b6f6' : '#1976d2';
+
     for (const loc of this.locations()) {
-      const radius = Math.min(8 + Math.log(loc.count + 1) * 5, 35);
-      L.circleMarker([loc.lat, loc.lon], {
-        radius,
-        color: markerColor,
-        fillColor: markerColor,
-        fillOpacity: dark ? 0.55 : 0.45,
-        weight: 1.5,
-      })
-        .bindPopup(
+      const size = Math.min(16 + Math.log(loc.count + 1) * 8, 60);
+      const el = document.createElement('div');
+      el.style.cssText = [
+        `width:${size}px`, `height:${size}px`,
+        `border-radius:50%`,
+        `background:${color}`,
+        `opacity:${dark ? 0.65 : 0.55}`,
+        `border:2px solid ${color}`,
+        `cursor:pointer`,
+        `box-shadow:0 0 0 4px ${color}33`,
+      ].join(';');
+
+      const popup = new maplibregl.Popup({ offset: size / 2, closeButton: false })
+        .setHTML(
           `<strong>${loc.city}${loc.country ? ', ' + loc.country : ''}</strong><br>` +
           `${loc.count.toLocaleString('pt-BR')} requisições<br>` +
           `${loc.avgMs.toFixed(0)} ms (média)`
-        )
-        .addTo(this.markersLayer);
+        );
+
+      const marker = new maplibregl.Marker({ element: el })
+        .setLngLat([loc.lon, loc.lat])
+        .setPopup(popup)
+        .addTo(this.map!);
+
+      this.markers.push(marker);
     }
   }
 
