@@ -106,17 +106,12 @@ export const routes: Routes = [
         loadComponent: () => import('./features/kafka-tester/kafka-tester.component').then(m => m.KafkaTesterComponent)
       },
       {
-        path: 'swift-consulta',
-        loadComponent: () => import('./features/swift-consulta/swift-consulta.component').then(m => m.SwiftConsultaComponent)
+        path: 'bank-consulta',
+        loadComponent: () => import('./features/bank-consulta/bank-consulta.component').then(m => m.BankConsultaComponent)
       },
-      {
-        path: 'iban-consulta',
-        loadComponent: () => import('./features/iban-consulta/iban-consulta.component').then(m => m.IbanConsultaComponent)
-      },
-      {
-        path: 'routing-number-consulta',
-        loadComponent: () => import('./features/routing-number-consulta/routing-number-consulta.component').then(m => m.RoutingNumberConsultaComponent)
-      }
+      { path: 'swift-consulta',          redirectTo: 'bank-consulta', pathMatch: 'full' },
+      { path: 'iban-consulta',           redirectTo: 'bank-consulta', pathMatch: 'full' },
+      { path: 'routing-number-consulta', redirectTo: 'bank-consulta', pathMatch: 'full' }
     ]
   },
   { path: '**', redirectTo: 'login' }
