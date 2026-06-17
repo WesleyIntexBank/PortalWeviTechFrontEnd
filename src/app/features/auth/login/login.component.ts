@@ -119,7 +119,7 @@ type LoginStep = 'credentials' | 'verify';
                 @if (loading()) {
                   <span class="loading-dots">Entrando</span>
                 } @else {
-                  <mat-icon>login</mat-icon> Entrar
+                  <ng-container><mat-icon>login</mat-icon> Entrar</ng-container>
                 }
               </button>
             </form>
@@ -170,7 +170,7 @@ type LoginStep = 'credentials' | 'verify';
                 @if (loading()) {
                   <span class="loading-dots">Verificando</span>
                 } @else {
-                  <mat-icon>verified_user</mat-icon> Verificar e entrar
+                  <ng-container><mat-icon>verified_user</mat-icon> Verificar e entrar</ng-container>
                 }
               </button>
 
@@ -206,7 +206,7 @@ type LoginStep = 'credentials' | 'verify';
                 @if (loading()) {
                   <span class="loading-dots">Verificando</span>
                 } @else {
-                  <mat-icon>verified_user</mat-icon> Verificar código
+                  <ng-container><mat-icon>verified_user</mat-icon> Verificar código</ng-container>
                 }
               </button>
 
