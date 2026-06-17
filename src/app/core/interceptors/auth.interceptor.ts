@@ -3,7 +3,7 @@ import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
-const PUBLIC_PATHS = ['/ChatOpenAI', '/ChatOpenAIImage', '/ChatOpenSpeechToSpeech'];
+const PUBLIC_PATHS: string[] = [];
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(AuthService);

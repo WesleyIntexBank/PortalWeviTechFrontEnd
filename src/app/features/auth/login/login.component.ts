@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { ThemeService } from '../../../core/services/theme.service';
 import { AuthService } from '../../../core/services/auth.service';
@@ -23,6 +24,7 @@ import { AuthService } from '../../../core/services/auth.service';
     MatIconModule,
     MatCheckboxModule,
     MatTooltipModule,
+    MatSnackBarModule,
   ],
   template: `
     <div class="login-page">
@@ -98,50 +100,78 @@ import { AuthService } from '../../../core/services/auth.service';
 
           <form class="login-form" (ngSubmit)="onSubmit()">
 
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>CPF / CNPJ</mat-label>
-              <input
-                matInput
-                type="text"
-                placeholder="000.000.000-00"
-                [(ngModel)]="document"
-                name="document"
-                required
-                autocomplete="username"
-              />
-              <mat-icon matSuffix>person_outline</mat-icon>
-            </mat-form-field>
+            @if (!show2FA()) {
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Usuário</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  placeholder="Digite seu usuário"
+                  [(ngModel)]="document"
+                  name="document"
+                  required
+                  autocomplete="username"
+                />
+                <mat-icon matSuffix>person_outline</mat-icon>
+              </mat-form-field>
 
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Senha</mat-label>
-              <input
-                matInput
-                [type]="showPassword() ? 'text' : 'password'"
-                placeholder="Digite sua senha"
-                [(ngModel)]="password"
-                name="password"
-                required
-                autocomplete="current-password"
-              />
-              <button
-                mat-icon-button
-                matSuffix
-                type="button"
-                (click)="togglePassword()"
-                tabindex="-1"
-              >
-                <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Senha</mat-label>
+                <input
+                  matInput
+                  [type]="showPassword() ? 'text' : 'password'"
+                  placeholder="Digite sua senha"
+                  [(ngModel)]="password"
+                  name="password"
+                  required
+                  autocomplete="current-password"
+                />
+                <button
+                  mat-icon-button
+                  matSuffix
+                  type="button"
+                  (click)="togglePassword()"
+                  tabindex="-1"
+                >
+                  <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+              </mat-form-field>
+
+              <div class="form-options">
+                <mat-checkbox [(ngModel)]="rememberMe" name="rememberMe" class="remember-check">
+                  Lembrar acesso
+                </mat-checkbox>
+                <a href="#" class="forgot-link" (click)="$event.preventDefault()">
+                  Esqueceu sua senha?
+                </a>
+              </div>
+            }
+
+            @if (show2FA()) {
+              <div class="twofa-info">
+                <mat-icon class="twofa-icon">security</mat-icon>
+                <p>Digite o código de 6 dígitos do seu autenticador.</p>
+              </div>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Código 2FA</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  placeholder="000000"
+                  [(ngModel)]="twoFaCode"
+                  name="twoFaCode"
+                  required
+                  maxlength="6"
+                  autocomplete="one-time-code"
+                />
+                <mat-icon matSuffix>pin</mat-icon>
+              </mat-form-field>
+
+              <button mat-button type="button" class="back-link" (click)="back2FA()">
+                <mat-icon>arrow_back</mat-icon> Voltar ao login
               </button>
-            </mat-form-field>
-
-            <div class="form-options">
-              <mat-checkbox [(ngModel)]="rememberMe" name="rememberMe" class="remember-check">
-                Lembrar acesso
-              </mat-checkbox>
-              <a href="#" class="forgot-link" (click)="$event.preventDefault()">
-                Esqueceu sua senha?
-              </a>
-            </div>
+            }
 
             <button
               mat-flat-button
@@ -150,11 +180,11 @@ import { AuthService } from '../../../core/services/auth.service';
               [disabled]="loading()"
             >
               @if (loading()) {
-                <span class="loading-dots">Entrando</span>
+                <span class="loading-dots">{{ show2FA() ? 'Verificando' : 'Entrando' }}</span>
               } @else {
                 <ng-container>
-                  <mat-icon>login</mat-icon>
-                  Entrar
+                  <mat-icon>{{ show2FA() ? 'verified_user' : 'login' }}</mat-icon>
+                  {{ show2FA() ? 'Verificar código' : 'Entrar' }}
                 </ng-container>
               }
             </button>
@@ -490,34 +520,111 @@ import { AuthService } from '../../../core/services/auth.service';
       .form-card { max-width: 100%; }
       .form-header h2 { font-size: 24px; }
     }
+
+    .twofa-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(112, 199, 60, 0.08);
+      border: 1px solid rgba(112, 199, 60, 0.2);
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 8px;
+    }
+
+    .twofa-icon { color: #70c73c; font-size: 24px; width: 24px; height: 24px; }
+
+    .twofa-info p {
+      margin: 0;
+      font-size: 13px;
+      color: var(--text-sec);
+      line-height: 1.5;
+    }
+
+    .back-link {
+      color: var(--text-sec) !important;
+      font-size: 13px !important;
+      margin-bottom: 8px;
+    }
+
+    .back-link mat-icon { font-size: 16px; width: 16px; height: 16px; }
   `]
 })
 export class LoginComponent {
   document = '';
   password = '';
+  twoFaCode = '';
   rememberMe = false;
   showPassword = signal(false);
   loading = signal(false);
+  show2FA = signal(false);
 
   currentYear = new Date().getFullYear();
   themeService = inject(ThemeService);
   private router = inject(Router);
   private auth = inject(AuthService);
+  private snackBar = inject(MatSnackBar);
 
   togglePassword() {
     this.showPassword.update(v => !v);
   }
 
-  onSubmit() {
-    if (!this.document || !this.password) return;
+  back2FA() {
+    this.show2FA.set(false);
+    this.twoFaCode = '';
+  }
 
+  onSubmit() {
+    if (this.show2FA()) {
+      this.submitTwoFa();
+    } else {
+      this.submitLogin();
+    }
+  }
+
+  private submitLogin() {
+    if (!this.document || !this.password) return;
     this.loading.set(true);
 
-    setTimeout(() => {
-      this.loading.set(false);
-      // Salva o token para manter a sessão ativa entre navegações
-      this.auth.setToken('session_' + Date.now());
-      this.router.navigate(['/dashboard']);
-    }, 2000);
+    this.auth.login({ userName: this.document.trim(), password: this.password.trim() }).subscribe({
+      next: response => {
+        this.loading.set(false);
+        if (response.isA2F === 1 && !response.token) {
+          this.show2FA.set(true);
+        } else {
+          this.router.navigate(['/dashboard']);
+        }
+      },
+      error: err => {
+        this.loading.set(false);
+        const msg = err.status === 401 ? 'Usuário ou senha inválidos.' : 'Erro ao realizar login. Tente novamente.';
+        this.snackBar.open(msg, 'Fechar', { duration: 4000 });
+      }
+    });
+  }
+
+  private submitTwoFa() {
+    if (!this.twoFaCode) return;
+    this.loading.set(true);
+
+    this.auth.validateCode({
+      userName: this.document.trim(),
+      password: this.password.trim(),
+      code: this.twoFaCode.trim()
+    }).subscribe({
+      next: response => {
+        this.loading.set(false);
+        if (response.result) {
+          this.router.navigate(['/dashboard']);
+        } else {
+          this.snackBar.open('Código 2FA inválido ou expirado.', 'Fechar', { duration: 4000 });
+          this.twoFaCode = '';
+        }
+      },
+      error: () => {
+        this.loading.set(false);
+        this.snackBar.open('Erro ao validar o código 2FA.', 'Fechar', { duration: 4000 });
+      }
+    });
   }
 }
