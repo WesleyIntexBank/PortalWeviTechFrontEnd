@@ -34,7 +34,11 @@
       "Bash(docker build *)",
       "Bash(docker push *)",
       "Bash(kubectl rollout restart *)",
-      "Bash(kubectl rollout status *)"
+      "Bash(kubectl rollout status *)",
+      "Bash(npm uninstall *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)"
     ]
   }
 }
