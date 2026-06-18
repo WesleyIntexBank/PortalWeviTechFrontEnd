@@ -278,9 +278,10 @@ export class ProfileMenusComponent implements OnInit {
         this.saving.set(false);
         this.snackBar.open('Configuração salva com sucesso!', 'OK', { duration: 3000 });
       },
-      error: () => {
+      error: (err) => {
         this.saving.set(false);
-        this.snackBar.open('Erro ao salvar configuração', 'OK', { duration: 3000 });
+        const msg = err?.error?.error ?? err?.error?.detail ?? 'Erro ao salvar configuração';
+        this.snackBar.open(msg, 'OK', { duration: 6000 });
       }
     });
   }
