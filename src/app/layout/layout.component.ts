@@ -438,13 +438,20 @@ export class LayoutComponent implements OnInit {
     menus$.subscribe({
       next: (menus: Menu[]) => {
         const roots = menus.filter(m => !m.isSubMenu);
-        const navItems: NavItem[] = roots.map(root => ({
-          ...this.toNavItem(root),
-          expanded: false,
-          children: menus
-            .filter(child => child.menuId === root.id)
-            .map(child => this.toNavItem(child)),
-        }));
+        const navItems: NavItem[] = roots.map(root => {
+          // getByProfile retorna submenus aninhados em root.subMenu;
+          // getAll retorna lista plana — fallback para filtro no array
+          const childSource: Menu[] =
+            root.subMenu?.length
+              ? root.subMenu
+              : menus.filter(child => child.isSubMenu && child.menuId === root.id);
+
+          return {
+            ...this.toNavItem(root),
+            expanded: false,
+            children: childSource.map(child => this.toNavItem(child)),
+          };
+        });
         this.navItems.set([...navItems]);
       },
       error: (err) => {

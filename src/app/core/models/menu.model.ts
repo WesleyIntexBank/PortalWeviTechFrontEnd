@@ -5,6 +5,6 @@ export interface Menu {
   component?: string;
   icon: string;
   menuId?: number;
-  subMenu?: any;
+  subMenu?: Menu[];
   isSubMenu?: boolean;
 }
