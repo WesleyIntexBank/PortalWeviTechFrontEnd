@@ -94,24 +94,6 @@ import { Menu } from '../../core/models/menu.model';
               </mat-card>
             }
 
-            @for (menu of standaloneMenus(); track menu.id) {
-              <mat-card class="menu-group-card">
-                <mat-card-content style="padding-top: 16px">
-                  <div class="menu-item">
-                    <mat-checkbox
-                      [checked]="isChecked(menu.id!)"
-                      (change)="toggle(menu.id!, $event.checked)"
-                      color="primary">
-                      <div class="menu-item-content">
-                        <mat-icon>{{ menu.icon || 'circle' }}</mat-icon>
-                        <span>{{ menu.title }}</span>
-                        <code class="route-mini">{{ menu.url }}</code>
-                      </div>
-                    </mat-checkbox>
-                  </div>
-                </mat-card-content>
-              </mat-card>
-            }
           </div>
 
           <div class="save-bar">

@@ -109,7 +109,7 @@ export class ProfilesComponent implements OnInit {
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-    this.dataSource.filterPredicate = (data, filter) => data.name.toLowerCase().includes(filter);
+    this.dataSource.filterPredicate = (data, filter) => (data.description ?? data.name ?? '').toLowerCase().includes(filter);
   }
 
   load() {
