@@ -148,7 +148,11 @@ import { Menu } from '../../core/models/menu.model';
       border-radius: 8px !important;
       background: var(--surface) !important;
       border: 1px solid var(--border) !important;
-      transition: background 0.25s !important;
+      transition: background 0.25s, color 0.25s !important;
+      color: var(--text) !important;
+      --mat-card-title-text-color: var(--text);
+      --mat-card-subtitle-text-color: var(--text-sec);
+      --mat-checkbox-label-text-color: var(--text);
       mat-card-avatar { color: var(--text); background: var(--avatar-bg); border-radius: 8px; padding: 4px; }
     }
 
@@ -165,6 +169,10 @@ import { Menu } from '../../core/models/menu.model';
       align-items: center;
       gap: 8px;
 
+      span {
+        color: var(--text);
+      }
+
       mat-icon {
         font-size: 18px;
         width: 18px;
@@ -175,13 +183,13 @@ import { Menu } from '../../core/models/menu.model';
 
     .route-mini {
       font-size: 11px;
-      color: var(--body-label);
+      color: var(--text-sec);
       background: var(--input-bg);
       padding: 1px 6px;
       border-radius: 4px;
       font-family: monospace;
       border: 1px solid var(--border);
-      transition: background 0.25s;
+      transition: background 0.25s, color 0.25s;
     }
 
     .save-bar {
