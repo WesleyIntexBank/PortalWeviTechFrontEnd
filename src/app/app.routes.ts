@@ -111,7 +111,11 @@ export const routes: Routes = [
       },
       { path: 'swift-consulta',          redirectTo: 'bank-consulta', pathMatch: 'full' },
       { path: 'iban-consulta',           redirectTo: 'bank-consulta', pathMatch: 'full' },
-      { path: 'routing-number-consulta', redirectTo: 'bank-consulta', pathMatch: 'full' }
+      { path: 'routing-number-consulta', redirectTo: 'bank-consulta', pathMatch: 'full' },
+      {
+        path: 'balanco-patrimonial',
+        loadComponent: () => import('./features/balanco-patrimonial/balanco-patrimonial.component').then(m => m.BalancoPatrimonialComponent)
+      },
     ]
   },
   { path: '**', redirectTo: 'login' }
