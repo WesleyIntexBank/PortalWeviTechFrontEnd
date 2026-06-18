@@ -116,6 +116,10 @@ export const routes: Routes = [
         path: 'balanco-patrimonial',
         loadComponent: () => import('./features/balanco-patrimonial/balanco-patrimonial.component').then(m => m.BalancoPatrimonialComponent)
       },
+      {
+        path: 'azure-reader-document',
+        loadComponent: () => import('./features/azure-reader-document/azure-reader-document.component').then(m => m.AzureReaderDocumentComponent)
+      },
     ]
   },
   { path: '**', redirectTo: 'login' }
