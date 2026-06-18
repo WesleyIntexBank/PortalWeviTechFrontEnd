@@ -11,6 +11,7 @@ export interface LoginRequest {
 
 export interface AuthResponse {
   userId: number;
+  userRole?: number;
   userName?: string;
   name?: string;
   email?: string;

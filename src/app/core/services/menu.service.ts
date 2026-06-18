@@ -13,6 +13,10 @@ export class MenuService {
     return this.http.get<Menu[]>(this.url);
   }
 
+  getByProfile(profileId: number): Observable<Menu[]> {
+    return this.http.get<Menu[]>(`${environment.apiUrl}/profile/${profileId}`);
+  }
+
   getById(id: number): Observable<Menu> {
     return this.http.get<Menu>(`${this.url}/${id}`);
   }

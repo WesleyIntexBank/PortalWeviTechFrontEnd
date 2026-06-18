@@ -430,9 +430,12 @@ export class LayoutComponent implements OnInit {
   }
 
   private loadMenus() {
+    const profileId = this.authService.currentUser()?.userRole;
+    const menus$ = profileId
+      ? this.menuService.getByProfile(profileId)
+      : this.menuService.getAll();
 
-
-    this.menuService.getAll().subscribe({
+    menus$.subscribe({
       next: (menus: Menu[]) => {
         const roots = menus.filter(m => !m.isSubMenu);
         const navItems: NavItem[] = roots.map(root => ({
