@@ -306,7 +306,7 @@ import {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 12px;
-      overflow: hidden;
+      overflow: clip; /* clip não cria scroll context — não bloqueia scroll filho */
       box-shadow: var(--card-shadow);
     }
 
@@ -320,10 +320,15 @@ import {
       h2 { margin: 0; font-size: 16px; font-weight: 700; color: var(--text); flex: 1; }
     }
 
-    .table-scroll { overflow-x: auto; }
+    .table-scroll {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border-radius: 0 0 12px 12px;
+    }
 
     .balance-table {
       width: 100%;
+      min-width: 560px;
       border-collapse: collapse;
       font-size: 13px;
     }
@@ -369,9 +374,34 @@ import {
     .negative { color: #ef5350 !important; }
     .positive { color: #66bb6a !important; }
 
+    /* === Responsivo === */
     @media (max-width: 768px) {
       .btn-extrair { align-self: stretch; justify-content: center; }
       .company-card { flex-direction: column; align-items: flex-start; }
+    }
+
+    @media (max-width: 600px) {
+      /* Coluna descrição fica sticky para o usuário ver enquanto scrolla */
+      .balance-table th.col-desc,
+      .balance-table td.col-desc {
+        position: sticky;
+        left: 0;
+        background: var(--card);
+        z-index: 1;
+        max-width: 160px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .row-level0 td.col-desc { background: rgba(61,90,254,0.06); }
+
+      /* Esconde variação em telas muito estreitas */
+      .col-var { display: none; }
+
+      /* Fonte menor nas células de valor */
+      .col-val { font-size: 12px; padding: 8px 10px; }
+      .balance-table td { padding: 8px 10px; }
+      .balance-table th { padding: 8px 10px; }
     }
   `]
 })
