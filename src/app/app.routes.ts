@@ -120,6 +120,10 @@ export const routes: Routes = [
         path: 'azure-reader-document',
         loadComponent: () => import('./features/azure-reader-document/azure-reader-document.component').then(m => m.AzureReaderDocumentComponent)
       },
+      {
+        path: 'configuracoes-parametros',
+        loadComponent: () => import('./features/configuracoes-parametros/configuracoes-parametros.component').then(m => m.ConfiguracoesParametrosComponent)
+      },
     ]
   },
   { path: '**', redirectTo: 'login' }
