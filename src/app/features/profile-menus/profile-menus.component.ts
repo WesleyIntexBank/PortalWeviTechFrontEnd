@@ -13,7 +13,6 @@ import { MatDividerModule } from '@angular/material/divider';
 import { FormsModule } from '@angular/forms';
 import { ProfileService } from '../../core/services/profile.service';
 import { MenuService } from '../../core/services/menu.service';
-import { ProfileMenuService } from '../../core/services/profile-menu.service';
 import { Profile } from '../../core/models/profile.model';
 import { Menu } from '../../core/models/menu.model';
 
@@ -40,7 +39,7 @@ import { Menu } from '../../core/models/menu.model';
             <mat-icon matPrefix>manage_accounts</mat-icon>
             <mat-select [(ngModel)]="selectedProfileId" (ngModelChange)="onProfileChange($event)">
               @for (p of profiles(); track p.id) {
-                <mat-option [value]="p.id">{{ p.name }}</mat-option>
+                <mat-option [value]="p.id">{{ p.description }}</mat-option>
               }
             </mat-select>
           </mat-form-field>
@@ -224,43 +223,35 @@ import { Menu } from '../../core/models/menu.model';
 })
 export class ProfileMenusComponent implements OnInit {
   private profileService = inject(ProfileService);
-  private menuService = inject(MenuService);
-  private profileMenuService = inject(ProfileMenuService);
-  private snackBar = inject(MatSnackBar);
+  private menuService    = inject(MenuService);
+  private snackBar       = inject(MatSnackBar);
 
-  profiles = signal<Profile[]>([]);
-  allMenus = signal<Menu[]>([]);
-  menuGroups = signal<(Menu & { children: Menu[] })[]>([]);
-  standaloneMenus = signal<Menu[]>([]);
+  profiles        = signal<Profile[]>([]);
+  menuGroups      = signal<(Menu & { children: Menu[] })[]>([]);
   selectedMenuIds = signal<number[]>([]);
-  loadingMenus = signal(false);
-  saving = signal(false);
+  loadingMenus    = signal(false);
+  saving          = signal(false);
   selectedProfileId: number | null = null;
 
   ngOnInit() {
+    // Carrega perfis (com profileMenus embutidos) e menus em paralelo
     this.profileService.getAll().subscribe(p => this.profiles.set(p));
+
     this.menuService.getAll().subscribe(menus => {
-      this.allMenus.set(menus);
-      const roots = menus.filter(m => !m.isSubMenu);
+      const roots  = menus.filter(m => !m.isSubMenu);
       const groups = roots.map(r => ({
         ...r,
-        children: menus.filter(c => c.menuId === r.id)
+        children: menus.filter(c => c.isSubMenu && c.menuId === r.id)
       }));
-      this.menuGroups.set(groups as any);
-      const parentIds = groups.flatMap(g => g.children.map(c => c.id));
-      this.standaloneMenus.set([]);
+      this.menuGroups.set(groups as (Menu & { children: Menu[] })[]);
     });
   }
 
   onProfileChange(profileId: number) {
-    this.loadingMenus.set(true);
-    this.profileMenuService.getByProfile(profileId).subscribe({
-      next: (pms) => {
-        this.selectedMenuIds.set(pms.map(pm => pm.menuId));
-        this.loadingMenus.set(false);
-      },
-      error: () => { this.loadingMenus.set(false); }
-    });
+    // Usa os profileMenus já carregados em getAll() — sem chamada extra ao backend
+    const profile = this.profiles().find(p => p.id === profileId);
+    const ids = (profile?.profileMenus ?? []).map(pm => pm.menuId);
+    this.selectedMenuIds.set(ids);
   }
 
   isChecked(menuId: number): boolean {
@@ -268,24 +259,38 @@ export class ProfileMenusComponent implements OnInit {
   }
 
   toggle(menuId: number, checked: boolean) {
-    if (checked) {
-      this.selectedMenuIds.update(ids => [...ids, menuId]);
-    } else {
-      this.selectedMenuIds.update(ids => ids.filter(id => id !== menuId));
-    }
+    this.selectedMenuIds.update(ids =>
+      checked ? [...ids, menuId] : ids.filter(id => id !== menuId)
+    );
   }
 
   save() {
     if (!this.selectedProfileId) return;
+    const profile = this.profiles().find(p => p.id === this.selectedProfileId);
+    if (!profile) return;
+
     this.saving.set(true);
-    this.profileMenuService.saveProfileMenus(this.selectedProfileId, this.selectedMenuIds()).subscribe({
+
+    const payload: Profile = {
+      ...profile,
+      profileMenus: this.selectedMenuIds().map(menuId => ({
+        profileId: this.selectedProfileId!,
+        menuId
+      }))
+    };
+
+    this.profileService.update(payload).subscribe({
       next: () => {
+        // Atualiza o cache local para que onProfileChange reflita a nova seleção
+        this.profiles.update(list =>
+          list.map(p => p.id === payload.id ? payload : p)
+        );
         this.saving.set(false);
-        this.snackBar.open('Configuração salva com sucesso!', 'OK', { duration: 3000, panelClass: ['success-snackbar'] });
+        this.snackBar.open('Configuração salva com sucesso!', 'OK', { duration: 3000 });
       },
       error: () => {
         this.saving.set(false);
-        this.snackBar.open('Erro ao salvar configuração', 'OK', { duration: 3000, panelClass: ['error-snackbar'] });
+        this.snackBar.open('Erro ao salvar configuração', 'OK', { duration: 3000 });
       }
     });
   }

@@ -73,7 +73,9 @@ export class ProfileFormDialogComponent {
     if (this.form.invalid) { this.form.markAllAsTouched(); return; }
     this.saving = true;
     const payload = this.form.value as Profile;
-    const req = this.data ? this.profileService.update(this.data.id!, payload) : this.profileService.create(payload);
+    const req = this.data
+      ? this.profileService.update({ ...payload, id: this.data.id })
+      : this.profileService.create(payload);
     req.subscribe({
       next: () => {
         this.snackBar.open(this.data ? 'Perfil atualizado!' : 'Perfil criado!', 'OK', { duration: 3000, panelClass: ['success-snackbar'] });
