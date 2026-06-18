@@ -500,27 +500,23 @@ export class LoginComponent {
 
     this.auth.login({ userName: this.document.trim(), password: this.password.trim() }).subscribe({
       next: response => {
-        if (response.isA2F === 1 && !response.token) {
-          // 2FA já configurado — pede apenas o código
-          this.loading.set(false);
+        this.loading.set(false);
+
+        // IsA2F=0: backend já gerou o token — entra direto no sistema
+        if (response.token) {
+          this.router.navigate(['/dashboard']);
+          return;
+        }
+
+        // IsA2F=1: 2FA configurado — pede apenas o código
+        if (response.isA2F === 1) {
           this.qrBase64.set(null);
           this.step.set('verify');
-        } else {
-          // 2FA não configurado ainda — gera o QR Code
-          this.auth.generateQr({ userName: this.document.trim(), password: this.password.trim() }).subscribe({
-            next: qrResponse => {
-              this.loading.set(false);
-              this.qrBase64.set(qrResponse.base64 ?? null);
-              this.step.set('verify');
-            },
-            error: () => {
-              // Se generateqr falhar (ex: 2FA foi configurado entre chamadas), mostra só o código
-              this.loading.set(false);
-              this.qrBase64.set(null);
-              this.step.set('verify');
-            }
-          });
+          return;
         }
+
+        // Fallback: sem token e sem IsA2F=1 — não deveria ocorrer, mas trata como inválido
+        this.snackBar.open('Não foi possível realizar o login. Tente novamente.', 'Fechar', { duration: 4000 });
       },
       error: err => {
         this.loading.set(false);
