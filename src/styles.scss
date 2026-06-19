@@ -195,9 +195,52 @@ html, body {
   max-width: 400px;
 }
 
-mat-table {
+mat-table,
+.mat-mdc-table,
+.mdc-data-table__table {
   width: 100%;
   background: transparent !important;
+}
+
+// ─── MDC Table rows ───────────────────────────────────────────────────────────
+.mat-mdc-header-row,
+.mdc-data-table__header-row {
+  background: var(--surface) !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+
+.mat-mdc-row,
+.mdc-data-table__row {
+  background: transparent !important;
+  border-bottom: 1px solid var(--border) !important;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: var(--row-hover) !important;
+  }
+
+  &:last-child { border-bottom: none !important; }
+}
+
+.mat-mdc-header-cell,
+.mdc-data-table__header-cell {
+  background: var(--surface) !important;
+  color: var(--text-sec) !important;
+  border-bottom-color: var(--border) !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+}
+
+.mat-mdc-cell,
+.mdc-data-table__cell {
+  color: var(--text) !important;
+  border-bottom-color: var(--border) !important;
+}
+
+.mdc-data-table__content {
+  background: var(--bg) !important;
 }
 
 .mat-column-actions {
@@ -461,6 +504,14 @@ mat-table {
   // Slide toggle
   --mdc-switch-track-color:                          var(--border);
   --mat-slide-toggle-label-text-color:               var(--text);
+
+  // Table
+  --mat-table-background-color:                      transparent;
+  --mat-table-header-headline-color:                 var(--text-sec);
+  --mat-table-row-item-label-text-color:             var(--text);
+  --mat-table-row-item-outline-color:                var(--border);
+  --mat-table-header-container-height:               52px;
+  --mat-table-row-item-container-height:             52px;
 }
 
 // Light theme override for form fields
@@ -483,6 +534,12 @@ html.light-theme {
   --mat-stepper-header-selected-state-icon-background-color: var(--primary);
   --mat-stepper-container-color:                     transparent;
   --mat-slide-toggle-label-text-color:               var(--text);
+
+  // Table
+  --mat-table-background-color:                      transparent;
+  --mat-table-header-headline-color:                 var(--text-sec);
+  --mat-table-row-item-label-text-color:             var(--text);
+  --mat-table-row-item-outline-color:                var(--border);
 }
 
 // ─── Botão de novo item (primary) ─────────────────────────────────────────────
