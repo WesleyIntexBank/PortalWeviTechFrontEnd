@@ -124,6 +124,35 @@ export const routes: Routes = [
         path: 'configuracoes-parametros',
         loadComponent: () => import('./features/configuracoes-parametros/configuracoes-parametros.component').then(m => m.ConfiguracoesParametrosComponent)
       },
+      // ─── LBD Monitor ──────────────────────────────────────────────────────────
+      {
+        path: 'lbd-monitor',
+        loadComponent: () => import('./features/lbd-monitor/visao-geral/visao-geral.component').then(m => m.VisaoGeralComponent)
+      },
+      {
+        path: 'lbd-instancias',
+        loadComponent: () => import('./features/lbd-monitor/instancias/instancias.component').then(m => m.InstanciasComponent)
+      },
+      {
+        path: 'lbd-backups',
+        loadComponent: () => import('./features/lbd-monitor/backups/backups.component').then(m => m.BackupsComponent)
+      },
+      {
+        path: 'lbd-alertas',
+        loadComponent: () => import('./features/lbd-monitor/alertas/alertas.component').then(m => m.AlertasComponent)
+      },
+      {
+        path: 'lbd-incidentes',
+        loadComponent: () => import('./features/lbd-monitor/incidentes/incidentes.component').then(m => m.IncidentesComponent)
+      },
+      {
+        path: 'lbd-entregas',
+        loadComponent: () => import('./features/lbd-monitor/entregas/entregas.component').then(m => m.EntregasComponent)
+      },
+      {
+        path: 'lbd-configuracoes',
+        loadComponent: () => import('./features/lbd-monitor/configuracoes/configuracoes.component').then(m => m.ConfiguracoesComponent)
+      },
     ]
   },
   { path: '**', redirectTo: 'login' }
