@@ -38,7 +38,29 @@
       "Bash(npm uninstall *)",
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(python3 *)",
+      "Bash(git *)",
+      "Bash(GIT_EDITOR=true git *)",
+      "Bash(dotnet build *)",
+      "Bash(awk -F: '$2 > 15 {print $0}')",
+      "Bash(dotnet ef *)",
+      "Bash(cp /mnt/c/Users/wesley.bezerra/Desktop/wevitech/Cambio/Portal_BackEnd/Portal_Apis/src/ExtraNetWeviTech.Domain/Entities/User/Users.cs /mnt/c/Users/wesley.bezerra/Desktop/wevitech/Cambio/Portal_Infra/Portal_Apis/src/ExtraNetWeviTech.Domain/Entities/User/Users.cs)",
+      "Bash(cp /mnt/c/Users/wesley.bezerra/Desktop/wevitech/Cambio/Portal_BackEnd/Portal_Apis/src/ExtraNetWeviTech.Application/Models/User/UserViewModel.cs /mnt/c/Users/wesley.bezerra/Desktop/wevitech/Cambio/Portal_Infra/Portal_Apis/src/ExtraNetWeviTech.Application/Models/User/UserViewModel.cs)",
+      "Bash(cp /mnt/c/Users/wesley.bezerra/Desktop/wevitech/Cambio/Portal_BackEnd/Portal_Apis/src/ExtraNetWeviTech.Domain/Entities/Auth/AuthenticationData.cs /mnt/c/Users/wesley.bezerra/Desktop/wevitech/Cambio/Portal_Infra/Portal_Apis/src/ExtraNetWeviTech.Domain/Entities/Auth/AuthenticationData.cs)",
+      "Bash(cp /mnt/c/Users/wesley.bezerra/Desktop/wevitech/Cambio/Portal_BackEnd/Portal_Apis/src/ExtraNetWeviTech.Domain/Contracts/Repositories/User/IUserRepository.cs /mnt/c/Users/wesley.bezerra/Desktop/wevitech/Cambio/Portal_Infra/Portal_Apis/src/ExtraNetWeviTech.Domain/Contracts/Repositories/User/IUserRepository.cs)",
+      "Bash(cp /mnt/c/Users/wesley.bezerra/Desktop/wevitech/Cambio/Portal_BackEnd/Portal_Apis/src/ExtraNetWeviTech.Infra.Data/Repositories/User/UserRepository.cs /mnt/c/Users/wesley.bezerra/Desktop/wevitech/Cambio/Portal_Infra/Portal_Apis/src/ExtraNetWeviTech.Infra.Data/Repositories/User/UserRepository.cs)",
+      "Bash(dotnet --list-sdks)",
+      "Bash(wget -q https://packages.microsoft.com/config/ubuntu/24.04/packages-microsoft-prod.deb -O /tmp/packages-microsoft-prod.deb)",
+      "Bash(sudo dpkg -i /tmp/packages-microsoft-prod.deb)",
+      "Bash(sudo apt-get update -q)",
+      "Bash(chmod +x /tmp/dotnet-install.sh)",
+      "Bash(/tmp/dotnet-install.sh --channel 10.0 --install-dir /home/wesleyab/.dotnet)",
+      "Bash(cp /mnt/c/Users/wesley.bezerra/Desktop/wevitech/Cambio/Portal_BackEnd/Portal_Apis/src/ExtraNetWeviTech.Infra.Data/Migrations/20260617213821_A2FMigration.cs /mnt/c/Users/wesley.bezerra/Desktop/wevitech/Cambio/Portal_Infra/Portal_Apis/src/ExtraNetWeviTech.Infra.Data/Migrations/)",
+      "Bash(cp /mnt/c/Users/wesley.bezerra/Desktop/wevitech/Cambio/Portal_BackEnd/Portal_Apis/src/ExtraNetWeviTech.Infra.Data/Migrations/20260617213821_A2FMigration.Designer.cs /mnt/c/Users/wesley.bezerra/Desktop/wevitech/Cambio/Portal_Infra/Portal_Apis/src/ExtraNetWeviTech.Infra.Data/Migrations/)",
+      "Bash(cp /mnt/c/Users/wesley.bezerra/Desktop/wevitech/Cambio/Portal_BackEnd/Portal_Apis/src/ExtraNetWeviTech.Infra.Data/Migrations/ExtraNetWeviTechContextModelSnapshot.cs /mnt/c/Users/wesley.bezerra/Desktop/wevitech/Cambio/Portal_Infra/Portal_Apis/src/ExtraNetWeviTech.Infra.Data/Migrations/)",
+      "Bash(cp /mnt/c/Users/wesley.bezerra/Desktop/wevitech/Cambio/Portal_BackEnd/Portal_Apis/src/src/nuget.config /mnt/c/Users/wesley.bezerra/Desktop/wevitech/Cambio/Portal_Infra/Portal_Apis/src/)",
+      "Bash(cp /mnt/c/Users/wesley.bezerra/Desktop/wevitech/Cambio/Portal_BackEnd/Portal_Apis/src/../nuget.config /mnt/c/Users/wesley.bezerra/Desktop/wevitech/Cambio/Portal_Infra/Portal_Apis/src/../)"
     ]
   }
 }

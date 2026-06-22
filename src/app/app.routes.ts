@@ -136,6 +136,14 @@ export const routes: Routes = [
         path: 'pix-participantes',
         loadComponent: () => import('./features/pix-participantes/pix-participantes.component').then(m => m.PixParticipantesComponent)
       },
+      {
+        path: 'acam204-validacao',
+        loadComponent: () => import('./features/acam204-validacao/acam204-validacao.component').then(m => m.Acam204ValidacaoComponent)
+      },
+      {
+        path: 'cdc-radar',
+        loadComponent: () => import('./features/cdc-radar/cdc-radar.component').then(m => m.CdcRadarComponent)
+      },
 
     ]
   },
