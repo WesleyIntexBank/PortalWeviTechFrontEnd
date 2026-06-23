@@ -51,7 +51,6 @@ import { ConveraKafkaService, ConveraPayload, ConveraKafkaResultado } from '../.
           <mat-card-header>
             <mat-icon mat-card-avatar class="card-avatar-icon">edit_note</mat-icon>
             <mat-card-title>Novo Registro</mat-card-title>
-            <mat-card-subtitle>Preencha os campos e clique em "Adicionar à Lista"</mat-card-subtitle>
           </mat-card-header>
 
           <mat-card-content>
@@ -508,44 +507,24 @@ import { ConveraKafkaService, ConveraPayload, ConveraKafkaResultado } from '../.
       overflow: hidden;
     }
 
-    /* ── Material form fields (padrão ds160) ───────────────────── */
-    ::ng-deep .mat-mdc-form-field {
-      .mat-mdc-text-field-wrapper {
-        background: var(--input-bg) !important;
-      }
+    /* ── MDC tokens: sobrescreve cores dos campos no card ─────────
+       Tokens cascateiam para todos os mat-form-field filhos,
+       funcionam em dark e light via var(--text) do tema global.    */
+    .form-card {
+      --mdc-outlined-text-field-label-text-color:        var(--text);
+      --mdc-outlined-text-field-input-text-color:        var(--text);
+      --mdc-outlined-text-field-outline-color:           var(--border);
+      --mdc-outlined-text-field-hover-outline-color:     var(--primary);
+      --mdc-outlined-text-field-focus-outline-color:     var(--accent);
+      --mdc-outlined-text-field-focus-label-text-color:  var(--accent);
+      --mdc-outlined-text-field-caret-color:             var(--accent);
+      --mdc-outlined-text-field-container-color:         transparent;
+      --mat-form-field-container-text-color:             var(--text);
+    }
 
-      .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__leading,
-      .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__notch,
-      .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__trailing {
-        border-color: var(--border) !important;
-      }
-
-      .mdc-text-field--outlined:not(.mdc-text-field--disabled):hover .mdc-notched-outline__leading,
-      .mdc-text-field--outlined:not(.mdc-text-field--disabled):hover .mdc-notched-outline__notch,
-      .mdc-text-field--outlined:not(.mdc-text-field--disabled):hover .mdc-notched-outline__trailing {
-        border-color: var(--primary) !important;
-      }
-
-      .mdc-text-field--focused .mdc-notched-outline__leading,
-      .mdc-text-field--focused .mdc-notched-outline__notch,
-      .mdc-text-field--focused .mdc-notched-outline__trailing {
-        border-color: var(--accent) !important;
-      }
-
-      .mdc-floating-label,
-      .mat-mdc-floating-label {
-        color: var(--text) !important;
-      }
-
-      .mdc-text-field--focused .mdc-floating-label,
-      .mdc-text-field--focused .mat-mdc-floating-label {
-        color: var(--accent) !important;
-      }
-
-      .mdc-text-field__input, input, textarea {
-        color: var(--text) !important;
-        caret-color: var(--accent) !important;
-      }
+    /* ── Fundo dos campos via ng-deep (flat, sem nesting) ─────── */
+    ::ng-deep .form-card .mat-mdc-text-field-wrapper {
+      background: var(--input-bg) !important;
     }
 
     ::ng-deep input[type="date"]::-webkit-calendar-picker-indicator {
@@ -558,7 +537,10 @@ import { ConveraKafkaService, ConveraPayload, ConveraKafkaResultado } from '../.
       background: var(--surface) !important;
     }
 
-    ::ng-deep .mat-expansion-panel-header-title,
+    ::ng-deep .mat-expansion-panel-header-title {
+      color: var(--text-sec) !important;
+    }
+
     ::ng-deep .mat-expansion-indicator::after {
       color: var(--text-sec) !important;
     }
