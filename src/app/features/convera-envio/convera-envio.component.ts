@@ -508,52 +508,59 @@ import { ConveraKafkaService, ConveraPayload, ConveraKafkaResultado } from '../.
       overflow: hidden;
     }
 
-    /* ── Material form fields: fundo + borda visíveis ────────────── */
-    :host ::ng-deep .mat-mdc-text-field-wrapper {
-      background: var(--input-bg) !important;
-      border-radius: 8px !important;
+    /* ── Material form fields (padrão ds160) ───────────────────── */
+    ::ng-deep .mat-mdc-form-field {
+      .mat-mdc-text-field-wrapper {
+        background: var(--input-bg) !important;
+      }
+
+      .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__leading,
+      .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__notch,
+      .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__trailing {
+        border-color: var(--border) !important;
+      }
+
+      .mdc-text-field--outlined:not(.mdc-text-field--disabled):hover .mdc-notched-outline__leading,
+      .mdc-text-field--outlined:not(.mdc-text-field--disabled):hover .mdc-notched-outline__notch,
+      .mdc-text-field--outlined:not(.mdc-text-field--disabled):hover .mdc-notched-outline__trailing {
+        border-color: var(--primary) !important;
+      }
+
+      .mdc-text-field--focused .mdc-notched-outline__leading,
+      .mdc-text-field--focused .mdc-notched-outline__notch,
+      .mdc-text-field--focused .mdc-notched-outline__trailing {
+        border-color: var(--accent) !important;
+      }
+
+      .mdc-floating-label,
+      .mat-mdc-floating-label {
+        color: var(--text) !important;
+      }
+
+      .mdc-text-field--focused .mdc-floating-label,
+      .mdc-text-field--focused .mat-mdc-floating-label {
+        color: var(--accent) !important;
+      }
+
+      .mdc-text-field__input, input, textarea {
+        color: var(--text) !important;
+        caret-color: var(--accent) !important;
+      }
     }
 
-    :host ::ng-deep .mdc-notched-outline__leading,
-    :host ::ng-deep .mdc-notched-outline__notch,
-    :host ::ng-deep .mdc-notched-outline__trailing {
-      border-color: rgba(255,255,255,0.22) !important;
-    }
-
-    html.light-theme :host ::ng-deep .mdc-notched-outline__leading,
-    html.light-theme :host ::ng-deep .mdc-notched-outline__notch,
-    html.light-theme :host ::ng-deep .mdc-notched-outline__trailing {
-      border-color: rgba(0,0,0,0.22) !important;
-    }
-
-    :host ::ng-deep .mdc-text-field--focused .mdc-notched-outline__leading,
-    :host ::ng-deep .mdc-text-field--focused .mdc-notched-outline__notch,
-    :host ::ng-deep .mdc-text-field--focused .mdc-notched-outline__trailing {
-      border-color: var(--accent) !important;
-    }
-
-    :host ::ng-deep .mdc-floating-label,
-    :host ::ng-deep .mat-mdc-floating-label {
-      color: var(--text-sec) !important;
-    }
-
-    :host ::ng-deep .mdc-text-field--focused .mdc-floating-label,
-    :host ::ng-deep .mdc-text-field--focused .mat-mdc-floating-label {
-      color: var(--accent) !important;
-    }
-
-    :host ::ng-deep .mdc-text-field__input {
-      color: var(--text) !important;
-    }
-
-    :host ::ng-deep input[type="date"]::-webkit-calendar-picker-indicator {
-      filter: invert(0.7);
+    ::ng-deep input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: var(--calendar-icon-filter, invert(0.6));
       cursor: pointer;
     }
 
-    /* ── Expansion panel: fundo do card ─────────────────────────── */
-    :host ::ng-deep mat-expansion-panel {
+    /* ── Expansion panel: herda surface ─────────────────────────── */
+    ::ng-deep mat-expansion-panel {
       background: var(--surface) !important;
+    }
+
+    ::ng-deep .mat-expansion-panel-header-title,
+    ::ng-deep .mat-expansion-indicator::after {
+      color: var(--text-sec) !important;
     }
 
     .result-card { margin-top: 16px; }

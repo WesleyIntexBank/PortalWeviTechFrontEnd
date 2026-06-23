@@ -67,6 +67,7 @@ html.dark-theme {
   --quick-profiles-icon: #64b5f6;
   --quick-enterprise-icon: #81c784;
   --quick-menus-icon:  #ffb74d;
+  --calendar-icon-filter: invert(0.7);
 }
 
 // ─── CSS Custom Properties: Tema Claro (cores do Mobile lightBody) ────────────
@@ -113,6 +114,7 @@ html.light-theme {
   --quick-profiles-icon: #1976d2;
   --quick-enterprise-icon: #388e3c;
   --quick-menus-icon:  #e65100;
+  --calendar-icon-filter: invert(0);
 }
 
 // ─── Base ─────────────────────────────────────────────────────────────────────
