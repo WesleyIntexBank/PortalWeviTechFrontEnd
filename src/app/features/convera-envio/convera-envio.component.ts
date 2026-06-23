@@ -501,11 +501,59 @@ import { ConveraKafkaService, ConveraPayload, ConveraKafkaResultado } from '../.
 
     /* ── Cards ───────────────────────────────────────────────────── */
     .form-card, .list-card, .result-card {
-      background: var(--toolbar, #1e1e2e);
+      background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 14px;
-      box-shadow: var(--card-shadow, 0 2px 12px rgba(0,0,0,.25));
+      box-shadow: var(--card-shadow);
       overflow: hidden;
+    }
+
+    /* ── Material form fields: fundo + borda visíveis ────────────── */
+    :host ::ng-deep .mat-mdc-text-field-wrapper {
+      background: var(--input-bg) !important;
+      border-radius: 8px !important;
+    }
+
+    :host ::ng-deep .mdc-notched-outline__leading,
+    :host ::ng-deep .mdc-notched-outline__notch,
+    :host ::ng-deep .mdc-notched-outline__trailing {
+      border-color: rgba(255,255,255,0.22) !important;
+    }
+
+    html.light-theme :host ::ng-deep .mdc-notched-outline__leading,
+    html.light-theme :host ::ng-deep .mdc-notched-outline__notch,
+    html.light-theme :host ::ng-deep .mdc-notched-outline__trailing {
+      border-color: rgba(0,0,0,0.22) !important;
+    }
+
+    :host ::ng-deep .mdc-text-field--focused .mdc-notched-outline__leading,
+    :host ::ng-deep .mdc-text-field--focused .mdc-notched-outline__notch,
+    :host ::ng-deep .mdc-text-field--focused .mdc-notched-outline__trailing {
+      border-color: var(--accent) !important;
+    }
+
+    :host ::ng-deep .mdc-floating-label,
+    :host ::ng-deep .mat-mdc-floating-label {
+      color: var(--text-sec) !important;
+    }
+
+    :host ::ng-deep .mdc-text-field--focused .mdc-floating-label,
+    :host ::ng-deep .mdc-text-field--focused .mat-mdc-floating-label {
+      color: var(--accent) !important;
+    }
+
+    :host ::ng-deep .mdc-text-field__input {
+      color: var(--text) !important;
+    }
+
+    :host ::ng-deep input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(0.7);
+      cursor: pointer;
+    }
+
+    /* ── Expansion panel: fundo do card ─────────────────────────── */
+    :host ::ng-deep mat-expansion-panel {
+      background: var(--surface) !important;
     }
 
     .result-card { margin-top: 16px; }
