@@ -148,6 +148,10 @@ export const routes: Routes = [
         path: 'convera-envio',
         loadComponent: () => import('./features/convera-envio/convera-envio.component').then(m => m.ConveraEnvioComponent)
       },
+      {
+        path: 'bny-envio',
+        loadComponent: () => import('./features/bny-envio/bny-envio.component').then(m => m.BnyEnvioComponent)
+      },
 
     ]
   },
