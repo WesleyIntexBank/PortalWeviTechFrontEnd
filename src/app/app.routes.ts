@@ -144,6 +144,10 @@ export const routes: Routes = [
         path: 'cdc-radar',
         loadComponent: () => import('./features/cdc-radar/cdc-radar.component').then(m => m.CdcRadarComponent)
       },
+      {
+        path: 'convera-envio',
+        loadComponent: () => import('./features/convera-envio/convera-envio.component').then(m => m.ConveraEnvioComponent)
+      },
 
     ]
   },
