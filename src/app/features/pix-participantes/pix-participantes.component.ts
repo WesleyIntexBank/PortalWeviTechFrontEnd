@@ -100,7 +100,7 @@ interface PixParticipante {
                   <td class="td-nome">{{ p.nome }}</td>
                   <td>{{ p.nome_reduzido }}</td>
                   <td>
-                    <span class="badge" [class.badge-direto]="p.modalidade_participacao === 'DIRETO'" [class.badge-indireto]="p.modalidade_participacao === 'INDIRETO'">
+                    <span class="badge" [class.badge-direto]="p.tipo_participacao === 'Direta'" [class.badge-indireto]="p.tipo_participacao === 'Indireta'">
                       {{ p.modalidade_participacao }}
                     </span>
                   </td>
