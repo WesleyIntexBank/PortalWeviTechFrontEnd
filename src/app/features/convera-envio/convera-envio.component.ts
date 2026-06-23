@@ -545,6 +545,31 @@ import { ConveraKafkaService, ConveraPayload, ConveraKafkaResultado } from '../.
       color: var(--text-sec) !important;
     }
 
+    /* ── mat-card header: título e subtítulo seguem o tema ───────── */
+    ::ng-deep .form-card .mat-mdc-card-title {
+      color: var(--text) !important;
+    }
+
+    ::ng-deep .form-card .mat-mdc-card-subtitle {
+      color: var(--text-sec) !important;
+    }
+
+    ::ng-deep .list-card .mat-mdc-card-title {
+      color: var(--text) !important;
+    }
+
+    ::ng-deep .list-card .mat-mdc-card-subtitle {
+      color: var(--text-sec) !important;
+    }
+
+    ::ng-deep .result-card .mat-mdc-card-title {
+      color: var(--text) !important;
+    }
+
+    ::ng-deep .result-card .mat-mdc-card-subtitle {
+      color: var(--text-sec) !important;
+    }
+
     .result-card { margin-top: 16px; }
 
     .card-avatar-icon {
