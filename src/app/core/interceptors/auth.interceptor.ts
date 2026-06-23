@@ -17,7 +17,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authReq).pipe(
     catchError((err: HttpErrorResponse) => {
-      if (!isPublic && (err.status === 401 || err.status === 404)) {
+      if (!isPublic && err.status === 401) {
         auth.logout();
       }
       return throwError(() => err);
