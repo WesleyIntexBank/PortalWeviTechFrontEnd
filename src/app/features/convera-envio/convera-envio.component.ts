@@ -35,7 +35,9 @@ import { ConveraKafkaService, ConveraPayload, ConveraKafkaResultado } from '../.
 
       <!-- ── Cabeçalho ─────────────────────────────────────────────── -->
       <div class="page-header">
-        <mat-icon class="header-icon">send_to_mobile</mat-icon>
+        <div class="header-icon-wrap">
+          <mat-icon class="header-icon">send_to_mobile</mat-icon>
+        </div>
         <div>
           <h1>Envio Convera</h1>
           <p class="subtitle">Monte a lista de registros e envie para processamento via Kafka → WorkerConvera</p>
@@ -435,45 +437,61 @@ import { ConveraKafkaService, ConveraPayload, ConveraKafkaResultado } from '../.
     </div>
   `,
   styles: [`
+    /* ── Wrapper ────────────────────────────────────────────────── */
     .page-wrapper {
       padding: 24px;
       max-width: 1600px;
       margin: 0 auto;
     }
 
+    /* ── Header ─────────────────────────────────────────────────── */
     .page-header {
       display: flex;
-      align-items: flex-start;
-      gap: 14px;
-      margin-bottom: 24px;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-icon-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: rgba(112, 199, 60, 0.12);
+      flex-shrink: 0;
     }
 
     .header-icon {
-      font-size: 36px;
-      width: 36px;
-      height: 36px;
-      color: var(--primary);
-      margin-top: 2px;
+      font-size: 26px;
+      width: 26px;
+      height: 26px;
+      color: var(--accent, #70c73c);
     }
 
     h1 {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 700;
-      margin: 0 0 4px;
+      margin: 0 0 3px;
       color: var(--text);
+      letter-spacing: -0.3px;
     }
 
     .subtitle {
       margin: 0;
-      font-size: 13px;
-      color: #888;
+      font-size: 12px;
+      color: var(--text-ter);
+      line-height: 1.5;
     }
 
-    /* Layout em duas colunas */
+    /* ── Layout grid ─────────────────────────────────────────────── */
     .layout-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 24px;
+      gap: 20px;
       align-items: start;
     }
 
@@ -481,82 +499,90 @@ import { ConveraKafkaService, ConveraPayload, ConveraKafkaResultado } from '../.
       .layout-grid { grid-template-columns: 1fr; }
     }
 
-    /* Cards */
+    /* ── Cards ───────────────────────────────────────────────────── */
     .form-card, .list-card, .result-card {
+      background: var(--toolbar, #1e1e2e);
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 14px;
+      box-shadow: var(--card-shadow, 0 2px 12px rgba(0,0,0,.25));
+      overflow: hidden;
     }
 
     .result-card { margin-top: 16px; }
 
     .card-avatar-icon {
-      color: var(--primary);
-      font-size: 28px;
-      width: 28px;
-      height: 28px;
+      color: var(--accent, #70c73c);
+      font-size: 26px;
+      width: 26px;
+      height: 26px;
     }
 
-    /* Sections */
+    /* ── Section label ───────────────────────────────────────────── */
     .section-title {
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-size: 13px;
+      gap: 7px;
+      font-size: 11px;
       font-weight: 700;
-      color: #666;
+      color: var(--text-ter);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin: 20px 0 12px;
+      letter-spacing: 0.8px;
+      margin: 20px 0 10px;
     }
 
-    .section-title mat-icon { font-size: 16px; width: 16px; height: 16px; }
+    .section-title mat-icon { font-size: 15px; width: 15px; height: 15px; }
 
-    /* Form rows */
+    /* ── Form rows ───────────────────────────────────────────────── */
     .form-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
-      padding: 8px 0;
+      gap: 10px;
+      padding: 6px 0;
     }
 
-    .field-sm  { flex: 0 0 110px; }
-    .field-md  { flex: 1 1 170px; }
-    .field-lg  { flex: 1 1 220px; }
+    .field-sm   { flex: 0 0 100px; }
+    .field-md   { flex: 1 1 160px; }
+    .field-lg   { flex: 1 1 200px; }
     .field-full { flex: 1 1 100%; }
 
-    /* Accordion */
-    .form-accordion {
-      margin-top: 8px;
-    }
+    /* ── Accordion ───────────────────────────────────────────────── */
+    .form-accordion { margin-top: 10px; }
 
     .form-accordion mat-expansion-panel {
-      border: 1px solid var(--border);
-      border-radius: 8px !important;
-      margin-bottom: 6px;
+      background: transparent !important;
+      border: 1px solid var(--border) !important;
+      border-radius: 10px !important;
+      margin-bottom: 6px !important;
       box-shadow: none !important;
     }
 
-    /* Badge count */
+    .form-accordion mat-expansion-panel-header {
+      border-radius: 10px !important;
+    }
+
+    /* ── Badge ───────────────────────────────────────────────────── */
     .badge {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      background: var(--primary);
-      color: #fff;
+      background: var(--accent, #70c73c);
+      color: #0d0d0d;
       border-radius: 10px;
-      min-width: 22px;
-      height: 22px;
+      min-width: 20px;
+      height: 20px;
       padding: 0 6px;
-      font-size: 12px;
-      font-weight: 700;
+      font-size: 11px;
+      font-weight: 800;
       margin-left: 10px;
       vertical-align: middle;
     }
 
-    /* List table */
+    /* ── List table ──────────────────────────────────────────────── */
     .list-table-wrap {
       overflow-x: auto;
-      margin-top: 8px;
+      margin-top: 6px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
     }
 
     .list-table {
@@ -567,70 +593,91 @@ import { ConveraKafkaService, ConveraPayload, ConveraKafkaResultado } from '../.
 
     .list-table th {
       text-align: left;
-      padding: 8px 10px;
-      font-size: 11px;
+      padding: 9px 12px;
+      font-size: 10px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.4px;
-      color: #888;
-      border-bottom: 2px solid var(--border);
+      letter-spacing: 0.6px;
+      color: var(--text-ter);
+      background: var(--sidebar, #151520);
+      border-bottom: 1px solid var(--border);
       white-space: nowrap;
     }
 
     .list-table td {
-      padding: 10px 10px;
+      padding: 10px 12px;
       border-bottom: 1px solid var(--border);
       vertical-align: middle;
+      color: var(--text-sec);
     }
 
     .list-table tr:last-child td { border-bottom: none; }
-    .list-table tr:hover td { background: rgba(0,0,0,.02); }
 
-    .td-index { color: #aaa; width: 32px; }
-    .td-boleto { font-weight: 600; }
-    .td-nome { max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .td-code { font-family: monospace; font-size: 12px; }
-    .td-valor { text-align: right; font-variant-numeric: tabular-nums; }
-    .td-actions { width: 48px; text-align: center; }
-
-    .chip-moeda {
-      background: #e8f5e9;
-      color: #2e7d32;
-      border-radius: 6px;
-      padding: 2px 8px;
-      font-size: 11px;
-      font-weight: 700;
+    .list-table tbody tr:hover td {
+      background: var(--row-hover, rgba(255,255,255,.04));
+      color: var(--text);
     }
 
-    .row-success td { background: rgba(46,125,50,.05); }
-    .row-error td   { background: rgba(198,40,40,.05); }
+    .td-index  { color: var(--text-ter); width: 32px; font-size: 11px; }
+    .td-boleto { font-weight: 600; color: var(--text); font-size: 12px; }
+    .td-nome   { max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .td-code   { font-family: 'Fira Mono', 'Consolas', monospace; font-size: 11px; color: var(--text-sec); }
+    .td-valor  { text-align: right; font-variant-numeric: tabular-nums; font-size: 12px; }
+    .td-actions { width: 44px; text-align: center; }
 
-    /* Status icons inline */
-    .status-icon { vertical-align: middle; }
-    .icon-ok { color: #2e7d32; }
-    .icon-err { color: #c62828; }
+    /* ── Moeda chip ──────────────────────────────────────────────── */
+    .chip-moeda {
+      display: inline-block;
+      background: rgba(112, 199, 60, 0.15);
+      color: var(--accent, #70c73c);
+      border: 1px solid rgba(112, 199, 60, 0.3);
+      border-radius: 6px;
+      padding: 1px 7px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
 
-    /* Empty state */
+    /* ── Row states ──────────────────────────────────────────────── */
+    .row-success td { background: rgba(112, 199, 60, 0.06) !important; }
+    .row-error   td { background: rgba(239, 83,  80, 0.06) !important; }
+
+    /* ── Status icons ────────────────────────────────────────────── */
+    .status-icon { vertical-align: middle; font-size: 20px; }
+    .icon-ok  { color: var(--accent, #70c73c); }
+    .icon-err { color: #ef5350; }
+
+    /* ── Empty state ─────────────────────────────────────────────── */
     .empty-state {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
-      padding: 48px 0;
-      color: #bbb;
+      gap: 12px;
+      padding: 52px 0;
+      color: var(--text-ter);
     }
 
-    .empty-state mat-icon { font-size: 48px; width: 48px; height: 48px; }
-    .empty-state p { margin: 0; font-size: 14px; }
+    .empty-state mat-icon {
+      font-size: 44px;
+      width: 44px;
+      height: 44px;
+      opacity: 0.4;
+    }
 
-    /* Buttons */
+    .empty-state p {
+      margin: 0;
+      font-size: 13px;
+      opacity: 0.7;
+    }
+
+    /* ── Buttons ─────────────────────────────────────────────────── */
     .btn-limpar { margin-right: 8px; }
 
-    /* Result panel */
+    /* ── Result panel ────────────────────────────────────────────── */
     .result-list {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
       margin-top: 8px;
     }
 
@@ -638,27 +685,38 @@ import { ConveraKafkaService, ConveraPayload, ConveraKafkaResultado } from '../.
       display: flex;
       align-items: flex-start;
       gap: 10px;
-      padding: 10px 14px;
+      padding: 10px 12px;
       border-radius: 8px;
       font-size: 13px;
+      border: 1px solid transparent;
     }
 
-    .result-ok  { background: #e8f5e9; }
-    .result-err { background: #fdecea; }
+    .result-ok {
+      background: rgba(112, 199, 60, 0.08);
+      border-color: rgba(112, 199, 60, 0.2);
+    }
 
-    .result-ok  mat-icon { color: #2e7d32; }
-    .result-err mat-icon { color: #c62828; }
+    .result-err {
+      background: rgba(239, 83, 80, 0.08);
+      border-color: rgba(239, 83, 80, 0.2);
+    }
+
+    .result-ok  mat-icon { color: var(--accent, #70c73c); font-size: 20px; }
+    .result-err mat-icon { color: #ef5350; font-size: 20px; }
 
     .result-info { display: flex; flex-direction: column; gap: 2px; }
 
+    .result-info strong { font-size: 13px; color: var(--text); }
+
     .result-detail {
       font-size: 11px;
-      color: #666;
+      color: var(--text-ter);
+      font-family: 'Fira Mono', 'Consolas', monospace;
     }
 
-    .result-err-msg { color: #c62828; }
+    .result-err-msg { color: #ef5350; font-family: inherit; }
 
-    /* Chip moeda no input */
+    /* ── List column ─────────────────────────────────────────────── */
     .list-column { display: flex; flex-direction: column; }
   `],
 })
