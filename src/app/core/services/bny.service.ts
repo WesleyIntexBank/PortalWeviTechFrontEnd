@@ -8,6 +8,15 @@ export interface BnyPaymentRequest {
   message: string;
   clientReferenceId: string;
   clientDescription: string;
+  referencia?: string;
+  moeda?: string;
+  valorME?: number;
+  dataValor?: string;
+  nomeBeneficiario?: string;
+  contaBeneficiario?: string;
+  bicDestino?: string;
+  contaPagador?: string;
+  nomePagador?: string;
 }
 
 export interface BnyPaymentAccepted {
@@ -54,9 +63,16 @@ export class BnyService {
   enviarLote(items: BnyListItem[]): Observable<BnyEnvioResultado[]> {
     const calls = items.map(item =>
       this.sendPayment({
-        message: item.mt103,
+        message:           item.mt103,
         clientReferenceId: item.clientReferenceId,
         clientDescription: item.clientDescription,
+        referencia:        item.referencia,
+        moeda:             item.moeda,
+        valorME:           item.valorME,
+        dataValor:         item.dataValor,
+        nomeBeneficiario:  item.nomeBeneficiario,
+        contaBeneficiario: item.contaBeneficiario,
+        bicDestino:        item.bicDestino,
       }).pipe(
         map(res => ({
           referencia: item.referencia,
