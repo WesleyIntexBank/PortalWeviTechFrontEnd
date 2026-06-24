@@ -152,6 +152,10 @@ export const routes: Routes = [
         path: 'bny-envio',
         loadComponent: () => import('./features/bny-envio/bny-envio.component').then(m => m.BnyEnvioComponent)
       },
+      {
+        path: 'visa-direct-envio',
+        loadComponent: () => import('./features/visa-direct-envio/visa-direct-envio.component').then(m => m.VisaDirectEnvioComponent)
+      },
 
     ]
   },
