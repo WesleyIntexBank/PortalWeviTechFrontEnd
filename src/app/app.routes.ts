@@ -156,6 +156,10 @@ export const routes: Routes = [
         path: 'visa-direct-envio',
         loadComponent: () => import('./features/visa-direct-envio/visa-direct-envio.component').then(m => m.VisaDirectEnvioComponent)
       },
+      {
+        path: 'moneygram-envio',
+        loadComponent: () => import('./features/moneygram-envio/moneygram-envio.component').then(m => m.MoneyGramEnvioComponent)
+      },
 
     ]
   },
