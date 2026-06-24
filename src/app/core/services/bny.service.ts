@@ -33,6 +33,7 @@ export interface BnyListItem {
   valorME: number;
   dataValor: string;
   nomeBeneficiario: string;
+  contaBeneficiario?: string;
   bicDestino: string;
   clientReferenceId: string;
   clientDescription: string;
