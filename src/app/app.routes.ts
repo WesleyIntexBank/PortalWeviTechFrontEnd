@@ -160,6 +160,10 @@ export const routes: Routes = [
         path: 'moneygram-envio',
         loadComponent: () => import('./features/moneygram-envio/moneygram-envio.component').then(m => m.MoneyGramEnvioComponent)
       },
+      {
+        path: 'pixbtg-envio',
+        loadComponent: () => import('./features/pixbtg-envio/pixbtg-envio.component').then(m => m.PixBtgEnvioComponent)
+      },
 
     ]
   },
