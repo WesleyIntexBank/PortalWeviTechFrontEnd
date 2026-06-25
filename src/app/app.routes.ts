@@ -164,6 +164,10 @@ export const routes: Routes = [
         path: 'pixbtg-envio',
         loadComponent: () => import('./features/pixbtg-envio/pixbtg-envio.component').then(m => m.PixBtgEnvioComponent)
       },
+      {
+        path: 'ccme-envio',
+        loadComponent: () => import('./features/ccme-envio/ccme-envio.component').then(m => m.CcmeEnvioComponent)
+      },
 
     ]
   },
