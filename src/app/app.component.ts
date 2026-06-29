@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ThemeService } from './core/services/theme.service';
+import { TrackingService } from './core/services/tracking.service';
 
 @Component({
   selector: 'app-root',
@@ -10,4 +11,9 @@ import { ThemeService } from './core/services/theme.service';
 })
 export class AppComponent {
   private theme = inject(ThemeService);
+  private tracking = inject(TrackingService);
+
+  constructor() {
+    this.tracking.init();
+  }
 }

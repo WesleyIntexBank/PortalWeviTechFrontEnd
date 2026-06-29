@@ -168,6 +168,10 @@ export const routes: Routes = [
         path: 'ccme-envio',
         loadComponent: () => import('./features/ccme-envio/ccme-envio.component').then(m => m.CcmeEnvioComponent)
       },
+      {
+        path: 'monitoring',
+        loadComponent: () => import('./features/monitoring/monitoring.component').then(m => m.MonitoringComponent)
+      },
 
     ]
   },
