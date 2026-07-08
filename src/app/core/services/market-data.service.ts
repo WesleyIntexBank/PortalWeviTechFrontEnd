@@ -36,16 +36,16 @@ export class MarketDataService {
     return this.http.get<any>(`${this.marketUrl}/overview`, { params: toParams({ category, region }) });
   }
 
-  getOption(screenerId: string, region: string): Observable<any> {
-    return this.http.get<any>(`${this.marketUrl}/option`, { params: toParams({ screenerId, region }) });
+  getOption(screenerId: string, region: string, offset = 0, limit = 0): Observable<any> {
+    return this.http.get<any>(`${this.marketUrl}/option`, { params: toParams({ screenerId, region, offset, limit }) });
   }
 
-  getEquity(screenerId: string, region: string): Observable<any> {
-    return this.http.get<any>(`${this.marketUrl}/equity`, { params: toParams({ screenerId, region }) });
+  getEquity(screenerId: string, region: string, offset = 0, limit = 0): Observable<any> {
+    return this.http.get<any>(`${this.marketUrl}/equity`, { params: toParams({ screenerId, region, offset, limit }) });
   }
 
-  getMutualFund(screenerId: string, region: string): Observable<any> {
-    return this.http.get<any>(`${this.marketUrl}/mutual-fund`, { params: toParams({ screenerId, region }) });
+  getMutualFund(screenerId: string, region: string, offset = 0, limit = 0): Observable<any> {
+    return this.http.get<any>(`${this.marketUrl}/mutual-fund`, { params: toParams({ screenerId, region, offset, limit }) });
   }
 
   // summary

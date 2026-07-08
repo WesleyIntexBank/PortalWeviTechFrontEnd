@@ -1,4 +1,4 @@
-import { Component, WritableSignal, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, WritableSignal, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -578,7 +578,7 @@ const PRIORITY_COLUMNS = [
     }
   `]
 })
-export class MarketDataComponent {
+export class MarketDataComponent implements OnInit {
   private service = inject(MarketDataService);
 
   readonly regions: Option[] = [
@@ -702,25 +702,42 @@ export class MarketDataComponent {
   });
 
   searchForm = new FormGroup({
-    keyword: new FormControl('', { nonNullable: true }),
+    keyword: new FormControl('Apple', { nonNullable: true }),
   });
 
   profileForm = new FormGroup({
-    symbol: new FormControl('', { nonNullable: true }),
+    symbol: new FormControl('AAPL', { nonNullable: true }),
   });
 
   chartForm = new FormGroup({
-    symbol: new FormControl('', { nonNullable: true }),
+    symbol: new FormControl('AAPL', { nonNullable: true }),
     range: new FormControl('1mo', { nonNullable: true }),
   });
 
   newsSymbolForm = new FormGroup({
-    symbol: new FormControl('', { nonNullable: true }),
+    symbol: new FormControl('AAPL', { nonNullable: true }),
   });
 
   newsKeywordForm = new FormGroup({
-    keyword: new FormControl('', { nonNullable: true }),
+    keyword: new FormControl('mercado financeiro', { nonNullable: true }),
   });
+
+  ngOnInit(): void {
+    // dispara todos os grupos de endpoints com valores padrão assim que a
+    // tela abre, sem exigir nenhuma ação do usuário para ver dados
+    this.loadOverview();
+    this.loadEquity();
+    this.loadEtf();
+    this.loadCrypto();
+    this.loadOption();
+    this.loadMutualFund();
+    this.loadSearchSymbol();
+    this.loadProfile();
+    this.loadChart();
+    this.loadHotNews();
+    this.loadNewsBySymbol();
+    this.loadNewsByKeyword();
+  }
 
   // ── ações ──
   loadOverview() {
