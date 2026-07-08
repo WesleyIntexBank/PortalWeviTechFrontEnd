@@ -30,7 +30,7 @@ const FONTE_ICONS: Record<string, string> = {
   BARRAMENTO: 'hub', STARMONEY: 'star', RECEITAWS: 'receipt',
   ROUTINGNUMBER: 'route', CEP: 'location_on',
   GRAFANA: 'monitoring', APPINSIGHTS: 'analytics',
-  DS160: 'flight', DEFAULT: 'settings'
+  DS160: 'flight', YAHOO_FINANCE: 'show_chart', DEFAULT: 'settings'
 };
 
 function isUrl(value: string): boolean {

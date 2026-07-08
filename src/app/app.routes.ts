@@ -172,6 +172,10 @@ export const routes: Routes = [
         path: 'monitoring',
         loadComponent: () => import('./features/monitoring/monitoring.component').then(m => m.MonitoringComponent)
       },
+      {
+        path: 'market-data',
+        loadComponent: () => import('./features/market-data/market-data.component').then(m => m.MarketDataComponent)
+      },
 
     ]
   },
